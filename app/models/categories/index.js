@@ -1,0 +1,1 @@
+exports.fetchAllCategories = require('./fetchAllCategories');
