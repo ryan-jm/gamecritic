@@ -1,13 +1,18 @@
 module.exports = {
-  version: 1.0,
+  version: '1.0',
   GET: {
-    categories: {
+    '/api': {
+      params: [],
+      queries: [],
+      response: 'Lists all endpoints',
+    },
+    '/api/categories': {
       params: [],
       queries: [],
       response: 'All categories',
     },
-    reviews: {
-      params: [':id', ':id/comments'],
+    '/api/reviews': {
+      params: ['/:id', '/:id/comments'],
       queries: {
         '?sort_by': [
           'owner',
@@ -31,8 +36,27 @@ module.exports = {
       },
       response: 'All reviews or review(s) corresponding to params / queries',
     },
-    api: 'Lists all endpoints',
   },
-  POST: {},
-  PATCH: {},
+  POST: {
+    '/api/reviews/:id/comments': {
+      expeced: {
+        username: 'A unique, valid username',
+        body: 'The comment body',
+      },
+      response: 'The posted comment',
+    },
+  },
+  PATCH: {
+    '/api/reviews/:id': {
+      expected: {
+        inc_votes: '<int>',
+      },
+      response: 'The patched review',
+    },
+  },
+  DELETE: {
+    '/api/comments/:id': {
+      response: 'Status 204 & no content',
+    },
+  },
 };
