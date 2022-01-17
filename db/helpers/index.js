@@ -10,13 +10,21 @@ exports.createAllTables = async () => {
   } catch (err) {}
 };
 
+exports.dropAllTables = async () => {
+  try {
+    await db.query('DROP TABLE IF EXISTS categories, users, reviews, comments');
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.seedAllTables = async (data) => {
   const { categoryData, commentData, reviewData, userData } = data;
   const queries = {
     categories: 'INSERT INTO categories (slug, description) VALUES %L;',
     users: 'INSERT INTO users (username, name, avatar_url) VALUES %L;',
     reviews:
-      'INSERT INTO reviews (title, designer, owner, review_img_url, body, category, created_at, votes) VALUES %L;',
+      'INSERT INTO reviews (title, designer, owner, review_img_url, review_body, category, created_at, votes) VALUES %L;',
     comments:
       'INSERT INTO comments (body, votes, author, review_id, created_at) VALUES %L;',
   };
@@ -46,7 +54,7 @@ const createCategories = async () => {
 const createUsers = async () => {
   try {
     const res = await db.query(
-      'CREATE TABLE users (username VARCHAR(50) PRIMARY KEY NOT NULL, avatar_url VARCHAR(80) NOT NULL, name VARCHAR(50) NOT NULL);'
+      'CREATE TABLE users (username TEXT PRIMARY KEY NOT NULL, avatar_url TEXT NOT NULL, name VARCHAR(50) NOT NULL);'
     );
     return res;
   } catch (err) {
@@ -60,13 +68,13 @@ const createReviews = async () => {
     const res = await db.query(
       `CREATE TABLE reviews (
         review_id SERIAL PRIMARY KEY, 
-        title VARCHAR(80) NOT NULL, 
+        title VARCHAR(255) NOT NULL, 
         review_body TEXT NOT NULL, 
-        designer VARCHAR(50) NOT NULL, 
+        designer VARCHAR(255) NOT NULL, 
         review_img_url VARCHAR(255) DEFAULT 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
         votes INT DEFAULT 0,
         category VARCHAR(255) REFERENCES categories(slug) NOT NULL,
-        owner VARCHAR(50) REFERENCES users(username) NOT NULL, 
+        owner TEXT REFERENCES users(username) NOT NULL, 
         created_at TIMESTAMP NOT NULL
         );`
     );
@@ -82,7 +90,7 @@ const createComments = async () => {
     const res = await db.query(
       `CREATE TABLE comments (
         comment_id SERIAL PRIMARY KEY,
-        author VARCHAR(50) REFERENCES users(username) NOT NULL,
+        author TEXT REFERENCES users(username) NOT NULL,
         review_id INT REFERENCES reviews(review_id) NOT NULL,
         votes INT DEFAULT 0,
         created_at TIMESTAMP NOT NULL,
