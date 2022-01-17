@@ -15,7 +15,7 @@ const fetchAllReviews = async ({
     SELECT reviews.owner, reviews.title, reviews.review_id, reviews.review_body, reviews.designer, 
     reviews.review_img_url, reviews.category, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count
     FROM reviews
-    JOIN comments 
+    LEFT JOIN comments 
     ON comments.review_id = reviews.review_id
     %s
     GROUP BY reviews.owner, reviews.title, reviews.review_id, reviews.review_body, reviews.designer, 
@@ -32,7 +32,7 @@ const fetchAllReviews = async ({
       return Promise.reject({ status: 404, message: 'No reviews found' });
     else return res.rows;
   } catch (err) {
-    Promise.reject(err);
+    return Promise.reject(err);
   }
 };
 
