@@ -9,7 +9,7 @@ const fetchReviewById = async (id) => {
     SELECT reviews.owner, reviews.title, reviews.review_id, reviews.review_body, reviews.designer, 
     reviews.review_img_url, reviews.category, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count
     FROM reviews
-    JOIN comments 
+    LEFT JOIN comments 
     ON comments.review_id = $1
     WHERE reviews.review_id = $1
     GROUP BY reviews.owner, reviews.title, reviews.review_id, reviews.review_body, reviews.designer, 
