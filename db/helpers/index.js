@@ -22,6 +22,7 @@ exports.seedAllTables = async (data) => {
   };
 
   try {
+    // Refactor this
     await seedFunc(queries.categories, categoryData);
     await seedFunc(queries.users, userData);
     await seedFunc(queries.reviews, reviewData);
