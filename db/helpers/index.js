@@ -7,7 +7,10 @@ exports.createAllTables = async () => {
     await createUsers();
     await createReviews();
     await createComments();
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 };
 
 exports.dropAllTables = async () => {
@@ -15,6 +18,7 @@ exports.dropAllTables = async () => {
     await db.query('DROP TABLE IF EXISTS categories, users, reviews, comments');
   } catch (err) {
     console.log(err);
+    return err;
   }
 };
 
@@ -35,7 +39,10 @@ exports.seedAllTables = async (data) => {
     await seedFunc(queries.users, userData);
     await seedFunc(queries.reviews, reviewData);
     await seedFunc(queries.comments, commentData);
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 };
 
 // #region Table Creation
