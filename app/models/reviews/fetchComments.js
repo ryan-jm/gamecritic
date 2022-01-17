@@ -1,7 +1,7 @@
 const db = require('../../../db/connection');
 
 const fetchComments = async (id) => {
-  if (!id || !parseInt(id)) {
+  if (!id || !Boolean(parseInt(id))) {
     return Promise.reject({ status: 400, message: 'Invalid review id' });
   } else {
     try {

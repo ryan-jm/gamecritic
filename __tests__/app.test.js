@@ -304,5 +304,88 @@ describe('API Endpoints', () => {
         expect(message).toBe('No comments found');
       });
     });
+
+    describe('POST: /api/reviews/:id/comments - Post a comment to a review', () => {
+      const commentSchema = {
+        comment_id: expect.any(Number),
+        body: expect.any(String),
+        author: expect.any(String),
+        review_id: expect.any(Number),
+        created_at: expect.any(String),
+      };
+
+      it('should respond with a 201 status code if successful', () => {
+        return request(app)
+          .post('/api/reviews/3/comments')
+          .send({
+            username: 'bainesface',
+            body: 'Test comment',
+          })
+          .expect(201);
+      });
+
+      it('should respond with the newly posted comment entry following the comment schema', async () => {
+        const {
+          body: { comment },
+        } = await request(app)
+          .post('/api/reviews/3/comments')
+          .send({
+            username: 'bainesface',
+            body: 'Look! Another test comment!',
+          })
+          .expect(201);
+        expect(comment).toEqual(expect.objectContaining(commentSchema));
+      });
+
+      it('error: should return a 400 bad request if the username or body of the request is missing', async () => {
+        const {
+          body: { message: noUsername },
+        } = await request(app)
+          .post('/api/reviews/3/comments')
+          .send({
+            body: 'Uh oh! This wont work!',
+          })
+          .expect(400);
+        const {
+          body: { message: noRequestBody },
+        } = await request(app)
+          .post('/api/reviews/3/comments')
+          .send({
+            username: 'bainesface',
+          })
+          .expect(400);
+
+        expect(noUsername).toBe('Invalid username or comment body');
+        expect(noRequestBody).toBe('Invalid username or comment body');
+      });
+
+      it('error: should return a 400 bad request if the review id is invalid', async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .post('/api/reviews/test/comments')
+          .send({
+            username: 'bainesface',
+            body: 'That review ID doesnt seem right to me!',
+          })
+          .expect(400);
+
+        expect(message).toBe('Invalid review id');
+      });
+
+      it('error: in cases that everything seems valid but the comment isnt posted, return a 400 response', async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .post('/api/reviews/999/comments')
+          .send({
+            username: 'bainesface',
+            body: 'Looks like there is no review with the ID of 999',
+          })
+          .expect(400);
+
+        expect(message).toBe('Bad Request');
+      });
+    });
   });
 });
