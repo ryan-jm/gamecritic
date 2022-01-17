@@ -3,12 +3,12 @@ module.exports = {
   GET: {
     '/api': {
       params: [],
-      queries: [],
+      queries: {},
       response: 'Lists all endpoints',
     },
     '/api/categories': {
       params: [],
-      queries: [],
+      queries: {},
       response: 'All categories',
     },
     '/api/reviews': {
