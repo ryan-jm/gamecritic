@@ -265,5 +265,44 @@ describe('API Endpoints', () => {
         );
       });
     });
+
+    describe('GET: /api/reviews/:id/comments - Get all comments associated with a review', () => {
+      const commentSchema = {
+        comment_id: expect.any(Number),
+        body: expect.any(String),
+        author: expect.any(String),
+        review_id: expect.any(Number),
+        created_at: expect.any(String),
+      };
+
+      it('should respond with a 200 status code if successful', () => {
+        return request(app).get('/api/reviews/3/comments').expect(200);
+      });
+
+      it('should respond with an array of comments following the comment schema', async () => {
+        const {
+          body: { comments },
+        } = await request(app).get('/api/reviews/3/comments').expect(200);
+
+        expect(comments).toBeInstanceOf(Array);
+        comments.forEach((comment) =>
+          expect(comment).toEqual(expect.objectContaining(commentSchema))
+        );
+      });
+
+      it('error: should return a 400 bad request error if the review id is invalid / not integer', async () => {
+        const {
+          body: { message },
+        } = await request(app).get('/api/reviews/test/comments').expect(400);
+        expect(message).toBe('Invalid review id');
+      });
+
+      it('error: should return a 404 not found if the review id is valid but no comments are available on that review', async () => {
+        const {
+          body: { message },
+        } = await request(app).get('/api/reviews/20/comments').expect(404);
+        expect(message).toBe('No comments found');
+      });
+    });
   });
 });
