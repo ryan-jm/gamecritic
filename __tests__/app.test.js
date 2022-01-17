@@ -45,4 +45,31 @@ describe('API Endpoints', () => {
       });
     });
   });
+
+  describe('Reviews routes', () => {
+    const reviewSchema = {
+      owner: expect.any(String),
+      title: expect.any(String),
+      review_id: expect.any(Number),
+      review_body: expect.any(String),
+      designer: expect.any(String),
+      review_img_url: expect.any(String),
+      category: expect.any(String),
+      created_at: expect.any(String),
+      votes: expect.any(Number),
+      comment_count: expect.any(String),
+    };
+
+    describe('GET: /api/reviews/:id - Get review by ID', () => {
+      it('should respond with a 200 status code', () => {
+        return request(app).get('/api/reviews/3').expect(200);
+      });
+
+      it('should respond with a "review" object containing the values of the requested review', async () => {
+        const res = await request(app).get('/api/reviews/3').expect(200);
+        expect(res.body.review).toBeInstanceOf(Object);
+        expect(res.body.review).toEqual(expect.objectContaining(reviewSchema));
+      });
+    });
+  });
 });
