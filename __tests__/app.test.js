@@ -82,7 +82,7 @@ describe('API Endpoints', () => {
       });
     });
 
-    describe('PATCH: /api/reviews/:id - Patch review', () => {
+    describe('PATCH: /api/reviews/:id - Patch a review by ID', () => {
       it('should respond with a 200 status code if successful', () => {
         return request(app)
           .patch('/api/reviews/3')
