@@ -1,0 +1,1 @@
+exports.removeComment = require('./removeComment');

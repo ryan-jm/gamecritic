@@ -388,4 +388,19 @@ describe('API Endpoints', () => {
       });
     });
   });
+
+  describe('Comments routes', () => {
+    describe('DELETE: /api/comments/:id - delete the corresponding comment', () => {
+      it('should return a 204 status code with no content if successful', () => {
+        return request(app).delete('/api/comments/2').expect(204);
+      });
+
+      it('error: should return a 400 bad request if the comment id is invalid', async () => {
+        const {
+          body: { message },
+        } = await request(app).delete('/api/comments/test').expect(400);
+        expect(message).toBe('Invalid comment id');
+      });
+    });
+  });
 });
