@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
+    "dev": "nodemon ./app/listen.js",
     "seed": "node ./db/seeds/run-seed.js",
     "test": "jest"
   },
@@ -19,6 +20,13 @@
     "url": "https://github.com/northcoders/be-nc-games/issues"
   },
   "homepage": "https://github.com/northcoders/be-nc-games#readme",
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "express": "^4.17.2",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "jest": "^27.4.7",
+    "jest-sorted": "^1.0.14",
+    "nodemon": "^2.0.15"
+  }
 }
