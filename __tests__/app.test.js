@@ -19,4 +19,30 @@ describe('API Endpoints', () => {
       expect(res.body.message).toBe('API Healthy');
     });
   });
+
+  describe('Categories routes', () => {
+    describe('GET: /api/categories/ - Get all categories', () => {
+      it('should respond with a 200 status code', () => {
+        return request(app).get('/api/categories').expect(200);
+      });
+
+      it('should return an array of categories with the length of 4', async () => {
+        const res = await request(app).get('/api/categories').expect(200);
+        expect(res.body.categories).toBeInstanceOf(Array);
+        expect(res.body.categories).toHaveLength(4);
+      });
+
+      it('the returned array should consist of category entries with a slug and description property', async () => {
+        const res = await request(app).get('/api/categories').expect(200);
+        res.body.categories.forEach((category) => {
+          expect(category).toEqual(
+            expect.objectContaining({
+              slug: expect.any(String),
+              description: expect.any(String),
+            })
+          );
+        });
+      });
+    });
+  });
 });
