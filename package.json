@@ -22,7 +22,8 @@
   "homepage": "https://github.com/northcoders/be-nc-games#readme",
   "dependencies": {
     "express": "^4.17.2",
-    "pg": "^8.7.1"
+    "pg": "^8.7.1",
+    "pg-format": "^1.0.4"
   },
   "devDependencies": {
     "jest": "^27.4.7",

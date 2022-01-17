@@ -1,4 +1,5 @@
 const db = require('../connection');
+const format = require('pg-format');
 
 exports.createAllTables = async () => {
   try {
@@ -9,6 +10,26 @@ exports.createAllTables = async () => {
   } catch (err) {}
 };
 
+exports.seedAllTables = async (data) => {
+  const { categoryData, commentData, reviewData, userData } = data;
+  const queries = {
+    categories: 'INSERT INTO categories (slug, description) VALUES %L;',
+    users: 'INSERT INTO users (username, name, avatar_url) VALUES %L;',
+    reviews:
+      'INSERT INTO reviews (title, designer, owner, review_img_url, body, category, created_at, votes) VALUES %L;',
+    comments:
+      'INSERT INTO comments (body, votes, author, review_id, created_at) VALUES %L;',
+  };
+
+  try {
+    await seedFunc(queries.categories, categoryData);
+    await seedFunc(queries.users, userData);
+    await seedFunc(queries.reviews, reviewData);
+    await seedFunc(queries.comments, commentData);
+  } catch (err) {}
+};
+
+// #region Table Creation
 const createCategories = async () => {
   try {
     const res = await db.query(
@@ -73,3 +94,25 @@ const createComments = async () => {
     return err;
   }
 };
+// #endregion
+
+// #region Table Seeding
+const seedFunc = async (query, data) => {
+  const insertData = formatSeedData(data);
+  const insert = format(query, insertData);
+
+  try {
+    const res = await db.query(insert);
+    return res;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+// #endregion
+
+// #region Utils
+const formatSeedData = (data) => {
+  return data.map((entry) => Object.values(entry));
+};
+// #endregion

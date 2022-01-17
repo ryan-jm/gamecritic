@@ -1,9 +1,12 @@
 const db = require('../connection');
+const { createAllTables } = require('../helpers');
 
 const seed = async (data) => {
-  const { categoryData, commentData, reviewData, userData } = data;
-  // 1. create tables
-  // 2. insert data
+  try {
+    await createAllTables();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 module.exports = seed;
