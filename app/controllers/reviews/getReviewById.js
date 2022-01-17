@@ -7,7 +7,7 @@ const getReviewById = async (req, res, next) => {
     const review = await fetchReviewById(id);
     return res.status(200).send({ review });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 

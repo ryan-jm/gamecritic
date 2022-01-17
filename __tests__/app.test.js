@@ -70,6 +70,77 @@ describe('API Endpoints', () => {
         expect(res.body.review).toBeInstanceOf(Object);
         expect(res.body.review).toEqual(expect.objectContaining(reviewSchema));
       });
+
+      it('error: should respond with a 404 not found response if no review entry can be found', async () => {
+        const res = await request(app).get('/api/reviews/100').expect(404);
+        expect(res.body.message).toBe('No review found');
+      });
+
+      it('error: should respond with a 400 invalid request response if id given is not a number', async () => {
+        const res = await request(app).get('/api/reviews/test').expect(400);
+        expect(res.body.message).toBe('Invalid ID provided');
+      });
+    });
+
+    describe('PATCH: /api/reviews/:id - Patch review', () => {
+      it('should respond with a 200 status code if successful', () => {
+        return request(app)
+          .patch('/api/reviews/3')
+          .send({ inc_votes: 10 })
+          .expect(200);
+      });
+
+      delete reviewSchema.comment_count;
+
+      it('positives integers: should respond with the updated review entry', async () => {
+        const {
+          body: { review },
+        } = await request(app)
+          .patch('/api/reviews/3')
+          .send({ inc_votes: 10 })
+          .expect(200);
+
+        expect(review.votes).toBe(15);
+        expect(review).toEqual(expect.objectContaining(reviewSchema));
+      });
+
+      it('negative integers: should respond with the updated review entry', async () => {
+        const {
+          body: { review },
+        } = await request(app)
+          .patch('/api/reviews/3')
+          .send({ inc_votes: -4 })
+          .expect(200);
+
+        expect(review.votes).toBe(1);
+        expect(review).toEqual(expect.objectContaining(reviewSchema));
+      });
+
+      it('error: should respond with a 404 not found response if no review entry can be found', async () => {
+        const res = await request(app)
+          .patch('/api/reviews/555')
+          .send({ inc_votes: 1 })
+          .expect(404);
+        expect(res.body.message).toBe('No review found');
+      });
+
+      it('error: should respond with a 400 bad request if the id or the inc_votes value is not an integer', async () => {
+        const invalidID = await request(app)
+          .patch('/api/reviews/test')
+          .send({ inc_votes: 1 })
+          .expect(400);
+        const invalidIncVotes = await request(app)
+          .patch('/api/reviews/3')
+          .send({ inc_votes: 'Test' })
+          .expect(400);
+
+        expect(invalidID.body.message).toBe(
+          'Invalid ID or inc_votes value provided'
+        );
+        expect(invalidIncVotes.body.message).toBe(
+          'Invalid ID or inc_votes value provided'
+        );
+      });
     });
   });
 });
