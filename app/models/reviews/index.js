@@ -1,0 +1,1 @@
+exports.fetchReviewById = require('./fetchReviewById');
