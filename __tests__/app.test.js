@@ -2,6 +2,7 @@ const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
 const seed = require('../db/seeds/seed.js');
 const app = require('../app');
+const NCGamesAPI = require('../app/info');
 
 const request = require('supertest');
 
@@ -14,9 +15,9 @@ describe('API Endpoints', () => {
       return request(app).get('/api/').expect(200);
     });
 
-    it('should respond with an "API Healthy" message', async () => {
+    it('should respond with all the valid endpoints', async () => {
       const res = await request(app).get('/api/').expect(200);
-      expect(res.body.message).toBe('API Healthy');
+      expect(res.body.NCGamesAPI).toEqual(NCGamesAPI);
     });
   });
 
