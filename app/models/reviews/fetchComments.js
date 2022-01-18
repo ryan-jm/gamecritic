@@ -1,7 +1,9 @@
 const db = require('../../../db/connection');
+const { reviewValidator } = require('../../utils');
 
 const fetchComments = async (id) => {
-  if (!id || !Boolean(parseInt(id))) {
+  const isValid = await reviewValidator(id);
+  if (!isValid) {
     return Promise.reject({ status: 400, message: 'Invalid review id' });
   } else {
     try {
