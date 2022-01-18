@@ -3,10 +3,11 @@ const db = require('../../../db/connection');
 
 const fetchReviewById = async (id) => {
   const isValid = await reviewValidator(id);
+  console.log(isValid, id);
 
   if (!isValid) {
     return Promise.reject({ status: 400, message: 'Invalid ID provided' });
-  } else {
+  } else if (isValid === 200) {
     const query = `
     SELECT reviews.owner, reviews.title, reviews.review_id, reviews.review_body, reviews.designer, 
     reviews.review_img_url, reviews.category, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count
@@ -19,12 +20,12 @@ const fetchReviewById = async (id) => {
 
     try {
       const res = await db.query(query, [id]);
-      if (res.rows.length === 0)
-        return Promise.reject({ status: 404, message: 'No review found' });
-      else return res.rows[0];
+      return res.rows[0];
     } catch (err) {
       return Promise.reject(err);
     }
+  } else {
+    return Promise.reject({ status: 404, message: 'No review found' });
   }
 };
 
