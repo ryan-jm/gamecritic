@@ -10,7 +10,7 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe('API Endpoints', () => {
-  describe('GET: /api/ - Health Check', () => {
+  describe('GET: /api/ - Health Check / Endpoint Info', () => {
     it('should respond with a 200 status code', () => {
       return request(app).get('/api/').expect(200);
     });

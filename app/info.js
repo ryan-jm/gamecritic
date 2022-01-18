@@ -3,37 +3,17 @@ module.exports = {
   GET: {
     '/api': {
       params: [],
-      queries: {},
+      queries: [],
       response: 'Lists all endpoints',
     },
     '/api/categories': {
       params: [],
-      queries: {},
+      queries: [],
       response: 'All categories',
     },
     '/api/reviews': {
       params: ['/:id', '/:id/comments'],
-      queries: {
-        '?sort_by': [
-          'owner',
-          'title',
-          'review_id',
-          'category',
-          'created_at',
-          'votes',
-          'comment_count',
-        ],
-        '?order': ['asc', 'desc'],
-        '?category': [
-          'strategy',
-          'hidden-roles',
-          'dexterity',
-          'push-your-luck',
-          'roll-and-write',
-          'deck-building',
-          'engine-building',
-        ],
-      },
+      queries: ['?sort_by', '?order', '?limit', '?p', '?category'],
       response: 'All reviews or review(s) corresponding to params / queries',
     },
   },
@@ -56,7 +36,7 @@ module.exports = {
   },
   DELETE: {
     '/api/comments/:id': {
-      response: 'Status 204 & no content',
+      response: 'Status code 204 & no content',
     },
   },
 };
