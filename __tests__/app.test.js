@@ -194,7 +194,7 @@ describe('API Endpoints', () => {
         expect(review).toEqual(expect.objectContaining(reviewSchema));
       });
 
-      it('error: should respond with a 404 not found response if no review entry can be found', async () => {
+      it('error: should respond with a 404 not found if no review entry can be found', async () => {
         const res = await request(app).get('/api/reviews/100').expect(404);
         expect(res.body.message).toBe('No review found');
       });
@@ -257,11 +257,9 @@ describe('API Endpoints', () => {
           .send({ inc_votes: 'Test' })
           .expect(400);
 
-        expect(invalidID.body.message).toBe(
-          'Invalid ID or inc_votes value provided'
-        );
+        expect(invalidID.body.message).toBe('Invalid review_id provided');
         expect(invalidIncVotes.body.message).toBe(
-          'Invalid ID or inc_votes value provided'
+          'Invalid inc_vote value provided'
         );
       });
     });
@@ -373,7 +371,7 @@ describe('API Endpoints', () => {
         expect(message).toBe('Invalid review id');
       });
 
-      it('error: in cases that everything seems valid but the comment isnt posted, return a 400 response', async () => {
+      it('error: in cases that everything seems valid but the comment isnt posted, return a 404 response', async () => {
         const {
           body: { message },
         } = await request(app)

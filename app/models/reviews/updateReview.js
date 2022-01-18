@@ -7,9 +7,17 @@ const updateReview = async ({ inc_votes }, id) => {
   const reviewIdValid = await reviewValidator(id);
 
   if (!reviewIdValid || !voteInputValid) {
+    let status, message;
+
+    if (!reviewIdValid)
+      (status = 400), (message = 'Invalid review_id provided');
+
+    if (!voteInputValid)
+      (status = 400), (message = 'Invalid inc_vote value provided');
+
     return Promise.reject({
-      status: 400,
-      message: 'Invalid ID or inc_votes value provided',
+      status,
+      message,
     });
   } else {
     const query = format(
