@@ -1,8 +1,12 @@
 const db = require('../../../db/connection');
 const format = require('pg-format');
+const { reviewValidator, idValidator } = require('../../utils');
 
 const updateReview = async ({ inc_votes }, id) => {
-  if (!Boolean(parseInt(id)) || !Boolean(parseInt(inc_votes))) {
+  const voteInputValid = idValidator(inc_votes); // Confirms is a number or can be coerced to a number
+  const reviewIdValid = await reviewValidator(id);
+
+  if (!reviewIdValid || !voteInputValid) {
     return Promise.reject({
       status: 400,
       message: 'Invalid ID or inc_votes value provided',
