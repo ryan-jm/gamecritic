@@ -33,24 +33,24 @@ describe('App Utils', () => {
   });
 
   describe('#reviewValidator', () => {
-    it('should return a boolean', async () => {
+    it('should return a number indicating status code', async () => {
       const output = await reviewValidator(1);
-      expect(output.constructor).toBe(Boolean);
+      expect(output.constructor).toBe(Number);
     });
 
-    it('pass: less or equal to the total number of reviews in db, return true', async () => {
+    it('pass: less or equal to the total number of reviews in db, return a 200 to indicate OK', async () => {
       const output = await reviewValidator(2);
-      expect(output).toBe(true);
+      expect(output).toBe(200);
     });
 
-    it('pass: can be coerced into a number and is less than the total number of reviews in db, return true', async () => {
+    it('pass: can be coerced into a number and is less than the total number of reviews in db, return 200 to indicate OK', async () => {
       const withString = await reviewValidator('3');
-      expect(withString).toBe(true);
+      expect(withString).toBe(200);
     });
 
-    it('fail: greater than the total number of reviews in db, return false', async () => {
+    it('fail: greater than the total number of reviews in db, return 404 to indicate Not Found', async () => {
       const output = await reviewValidator(1000);
-      expect(output).toBe(false);
+      expect(output).toBe(404);
     });
 
     it('fail: can be coerced to a number, but is less than zero, return false', async () => {
