@@ -1,8 +1,10 @@
-const format = require('pg-format');
+const { reviewValidator } = require('../../utils');
 const db = require('../../../db/connection');
 
 const fetchReviewById = async (id) => {
-  if (!Boolean(parseInt(id))) {
+  const isValid = await reviewValidator(id);
+
+  if (!isValid) {
     return Promise.reject({ status: 400, message: 'Invalid ID provided' });
   } else {
     const query = `
