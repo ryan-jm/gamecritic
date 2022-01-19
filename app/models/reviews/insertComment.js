@@ -16,7 +16,7 @@ const insertComment = async ({ username, body }, id) => {
     return Promise.reject({ status: 400, message: 'Invalid review id' });
   } else if (validReview === 404) {
     return Promise.reject({ status: 404, message: 'Review cannot be found' });
-  } else if (!userValid) {
+  } else if (userValid === 404) {
     return Promise.reject({ status: 404, message: 'User does not exist' });
   } else {
     try {
