@@ -142,22 +142,32 @@ describe('App Utils', () => {
   });
 
   describe('#userValidator', () => {
-    it('should return a numeric value corresponding to the status code - 200 if user exists', async () => {
-      const isValid = await userValidator('mallionaire');
+    it('should return a numeric value corresponding to the status code', async () => {
+      const isValid = await userValidator(1);
+      expect(isValid.constructor).toBe(Number);
+    });
+
+    it('pass: if the user id validated is less or equal to the number of total users in db return 200 to indicate OK', async () => {
+      const isValid = await userValidator(1);
       expect(isValid).toBe(200);
     });
 
-    it('should return a 404 if the user does not exist in the database', async () => {
-      const isValid = await userValidator('notvaliduser');
+    it('pass: will coerce data-types into integers if possible', async () => {
+      const isValid = await userValidator('2');
+      expect(isValid).toBe(200);
+    });
+
+    it('fail: should return a 404 if the user does not exist in the database', async () => {
+      const isValid = await userValidator(999);
       expect(isValid).toBe(404);
     });
 
-    it('fail: should return false if the request username is not a string', async () => {
-      const withNum = await userValidator(123873);
+    it('fail: returns false if it cannot coerce the input data into an integer', async () => {
+      const withString = await userValidator('test');
       const withArray = await userValidator([1, 3, 'user please']);
       const withNaN = await userValidator(NaN);
 
-      expect(withNum).toBe(false);
+      expect(withString).toBe(false);
       expect(withArray).toBe(false);
       expect(withNaN).toBe(false);
     });
