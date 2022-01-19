@@ -1,0 +1,1 @@
+exports.getAllUsers = require('./getAllUsers');
