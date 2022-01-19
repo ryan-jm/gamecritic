@@ -531,6 +531,13 @@ describe('API Endpoints', () => {
         } = await request(app).delete('/api/comments/test').expect(400);
         expect(message).toBe('Invalid comment id');
       });
+
+      it('error: should return a 404 if the comment id is valid but does not exist in the db', async () => {
+        const {
+          body: { message },
+        } = await request(app).delete('/api/comments/999').expect(404);
+        expect(message).toBe('Comment does not exist');
+      });
     });
   });
 
