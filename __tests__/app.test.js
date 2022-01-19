@@ -417,6 +417,27 @@ describe('API Endpoints', () => {
           .expect(201);
       });
 
+      it('ignores unncessary properties in request body', async () => {
+        const {
+          body: { comment },
+        } = await request(app)
+          .post('/api/reviews/3/comments')
+          .send({
+            username: 'bainesface',
+            body: 'Ignoring other props',
+            anotherProp: 'should be ignored',
+            likes: ['cheese', 'wine', 'work parties'],
+          });
+
+        expect(comment.hasOwnProperty('anotherProp')).toBe(false);
+        expect(comment.hasOwnProperty('likes')).toBe(false);
+        expect(comment.body).toBe('Ignoring other props');
+        expect(comment.author).toBe('bainesface');
+        expect(comment.comment_id).toBe(7);
+        expect(comment.votes).toBe(0);
+        expect(comment.review_id).toBe(3);
+      });
+
       it('should respond with the newly posted comment entry following the comment schema', async () => {
         const {
           body: { comment },
@@ -480,6 +501,20 @@ describe('API Endpoints', () => {
           .expect(404);
 
         expect(message).toBe('Review cannot be found');
+      });
+
+      it('error: should return a 404 if the user cannot be found in the db', async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .post('/api/reviews/3/comments')
+          .send({
+            username: 'TestUser3000',
+            body: 'I shouldnt exist!',
+          })
+          .expect(404);
+
+        expect(message).toBe('User does not exist');
       });
     });
   });
