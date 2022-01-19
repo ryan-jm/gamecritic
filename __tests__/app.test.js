@@ -70,7 +70,6 @@ describe('API Endpoints', () => {
         const {
           body: { reviews },
         } = res;
-        console.log(reviews);
         expect(reviews).toBeInstanceOf(Array);
         expect(reviews).toHaveLength(10);
         reviews.forEach((review) =>
