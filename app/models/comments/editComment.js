@@ -1,12 +1,14 @@
 const commentValidator = require('../../utils/commentValidator');
 const idValidator = require('../../utils/idValidator');
+const db = require('../../../db/connection');
 const format = require('pg-format');
 
 const editComment = async ({ inc_votes }, id) => {
   const commentValid = await commentValidator(id);
+  if (!inc_votes || inc_votes === undefined) inc_votes = 0;
   const votesValid = idValidator(inc_votes);
 
-  if (!votesValid) {
+  if (!votesValid && inc_votes !== 0) {
     return Promise.reject({ status: 400, message: 'Invalid inc_votes value' });
   }
 
