@@ -496,4 +496,20 @@ describe('API Endpoints', () => {
       });
     });
   });
+
+  describe('Users routes', () => {
+    describe('GET: /api/users - get an array of all users', () => {
+      it('should return a 200 status code when request is successful', () => {
+        return request(app).get('/api/users').expect(200);
+      });
+
+      it('should return an array of user entries', async () => {
+        const {
+          body: { users },
+        } = await request(app).get('/api/users');
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+      });
+    });
+  });
 });
