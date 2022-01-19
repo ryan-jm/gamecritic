@@ -373,6 +373,16 @@ describe('API Endpoints', () => {
         );
       });
 
+      it('responds with an empty array if the review exists but no comments are present', async () => {
+        const {
+          body: { comments },
+        } = await request(app).get('/api/reviews/12/comments');
+
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
+        expect(comments).toEqual([]);
+      });
+
       it('error: should return a 400 bad request error if the review id is invalid / not integer', async () => {
         const {
           body: { message },
@@ -380,11 +390,11 @@ describe('API Endpoints', () => {
         expect(message).toBe('Invalid review id');
       });
 
-      it('error: should return a 404 not found if the review id is valid but no comments are available on that review', async () => {
+      it('error: review id is valid but does not exist in the db, respond with a 404', async () => {
         const {
           body: { message },
         } = await request(app).get('/api/reviews/20/comments').expect(404);
-        expect(message).toBe('No comments found');
+        expect(message).toBe('Review cannot be found');
       });
     });
 
