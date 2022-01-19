@@ -3,4 +3,4 @@ const { getAllUsers } = require('../../controllers/users');
 
 userRouter.get('/', getAllUsers);
 
-module.exports = reviewRouter;
+module.exports = userRouter;
