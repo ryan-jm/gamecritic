@@ -1,6 +1,6 @@
 const format = require('pg-format');
 const db = require('../../../db/connection');
-const { categoryValidator } = require('../../utils');
+const categoryValidator = require('../../utils/categoryValidator');
 
 const fetchAllReviews = async ({
   sort_by = 'created_at',

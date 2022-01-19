@@ -167,11 +167,30 @@ describe('API Endpoints', () => {
         );
       });
 
-      it('error: if no reviews are found (due to a query or filter), a 404 response is given', async () => {
+      it('queries: category query is valid but has no reviews, respond with a 200 status code and empty array', async () => {
+        const {
+          body: { reviews },
+        } = await request(app)
+          .get("/api/reviews?category=children's games")
+          .expect(200);
+
+        expect(reviews.constructor).toBe(Array);
+        expect(reviews).toHaveLength(0);
+        expect(reviews).toEqual([]);
+      });
+
+      it('error: if the category query exists but the category is invalid in the db, respond with 404', async () => {
         const {
           body: { message },
         } = await request(app).get('/api/reviews?category=test').expect(404);
-        expect(message).toBe('No reviews found');
+        expect(message).toBe('Category non-existent');
+      });
+
+      it('error: if the order query exists but is invalid, respond with a 400 bad request', async () => {
+        const {
+          body: { message },
+        } = await request(app).get('/api/reviews?order=test').expect(400);
+        expect(message).toBe('Invalid order query');
       });
 
       it('error: responds with a 400 bad request if sort_by category does not exist', async () => {
