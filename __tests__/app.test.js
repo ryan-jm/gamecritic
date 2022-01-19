@@ -367,6 +367,7 @@ describe('API Endpoints', () => {
         } = await request(app).get('/api/reviews/3/comments');
 
         expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(3);
         comments.forEach((comment) =>
           expect(comment).toEqual(expect.objectContaining(commentSchema))
         );
