@@ -70,8 +70,9 @@ describe('API Endpoints', () => {
         const {
           body: { reviews },
         } = res;
+        console.log(reviews);
         expect(reviews).toBeInstanceOf(Array);
-        expect(reviews).toHaveLength(13);
+        expect(reviews).toHaveLength(10);
         reviews.forEach((review) =>
           expect(review).toEqual(expect.objectContaining(reviewSchema))
         );
@@ -161,7 +162,7 @@ describe('API Endpoints', () => {
           expect(dexReviews.category).toBe('dexterity')
         );
 
-        expect(socialDeductionOnly).toHaveLength(11);
+        expect(socialDeductionOnly).toHaveLength(10);
         socialDeductionOnly.forEach((sdReviews) =>
           expect(sdReviews.category).toBe('social deduction')
         );

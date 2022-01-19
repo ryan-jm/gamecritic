@@ -5,8 +5,19 @@ const fetchAllReviews = async ({
   sort_by = 'created_at',
   order = 'desc',
   category = undefined,
+  limit = 10,
+  p = 1,
 }) => {
   let whereClause = '';
+
+  const limitValid = typeof limit === 'number' || typeof limit === 'string';
+  const pageValid = typeof p === 'number' || typeof p === 'string';
+
+  if (!limitValid) limit = 10;
+  if (!pageValid) p = 1;
+
+  const offset = p - 1;
+  const pagination = `LIMIT ${limit} OFFSET ${offset * limit}`;
 
   if (category) {
     const categoryValid = await categoryValidator(category);
@@ -28,15 +39,17 @@ const fetchAllReviews = async ({
     %s
     GROUP BY reviews.owner, reviews.title, reviews.review_id, reviews.designer, 
     reviews.review_img_url, reviews.category, reviews.created_at, reviews.votes
-    ORDER BY %s %s`,
+    ORDER BY %s %s
+    %s`,
     whereClause,
     `reviews.${sort_by}`,
-    order.toUpperCase()
+    order.toUpperCase(),
+    pagination
   );
 
   try {
     const res = await db.query(query);
-    return res.rows;
+    return { reviews: res.rows, limit, page: p };
   } catch (err) {
     return Promise.reject(err);
   }

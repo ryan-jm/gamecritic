@@ -14,7 +14,7 @@ async function reviewValidator(id) {
     else {
       id = parseInt(id);
       if (id < 0) return false;
-      const reviews = await fetchAllReviews({});
+      const { reviews } = await fetchAllReviews({ limit: 1000 });
       return id <= reviews.length ? 200 : 404;
     }
   } catch (err) {
