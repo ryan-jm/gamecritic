@@ -1,0 +1,1 @@
+exports.fetchAllUsers = require('./fetchAllUsers');
