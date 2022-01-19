@@ -424,7 +424,10 @@ describe('API Endpoints', () => {
           username: 'bainesface',
           body: 'Look! Another test comment!',
         });
+
         expect(comment).toEqual(expect.objectContaining(commentSchema));
+        expect(comment.body).toBe('Look! Another test comment!');
+        expect(comment.username).toBe('bainesface');
       });
 
       it('error: should return a 400 bad request if the username or body of the request is missing', async () => {
@@ -463,7 +466,7 @@ describe('API Endpoints', () => {
         expect(message).toBe('Invalid review id');
       });
 
-      it('error: in cases that everything seems valid but the comment isnt posted, return a 404 response', async () => {
+      it('error: should return a 404 if the review id is valid but does not exist in the db', async () => {
         const {
           body: { message },
         } = await request(app)
@@ -472,9 +475,9 @@ describe('API Endpoints', () => {
             username: 'bainesface',
             body: 'Looks like there is no review with the ID of 999',
           })
-          .expect(400);
+          .expect(404);
 
-        expect(message).toBe('Bad Request');
+        expect(message).toBe('Review cannot be found');
       });
     });
   });
