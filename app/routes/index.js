@@ -1,16 +1,18 @@
 const router = require('express').Router();
 
-const categories = require('./categories');
-const comments = require('./comments');
-const reviews = require('./reviews');
+const categoriesRouter = require('./categories');
+const commentsRouter = require('./comments');
+const reviewsRouter = require('./reviews');
+const usersRouter = require('./users');
 const NCGamesAPI = require('../info');
 
 router.get('/', (req, res, next) => {
   res.status(200).send({ NCGamesAPI });
 });
 
-router.use('/categories', categories);
-router.use('/comments', comments);
-router.use('/reviews', reviews);
+router.use('/categories', categoriesRouter);
+router.use('/comments', commentsRouter);
+router.use('/reviews', reviewsRouter);
+router.use('/users', usersRouter);
 
 module.exports = router;
