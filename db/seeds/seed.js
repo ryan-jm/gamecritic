@@ -6,7 +6,6 @@ const seed = async (data) => {
     await createAllTables();
     await seedAllTables(data);
   } catch (err) {
-    console.log(err); // Will remove this when hosted.
     throw new Error(err);
   }
 };

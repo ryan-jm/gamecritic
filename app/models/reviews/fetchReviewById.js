@@ -3,7 +3,6 @@ const db = require('../../../db/connection');
 
 const fetchReviewById = async (id) => {
   const isValid = await reviewValidator(id);
-  console.log(isValid, id);
 
   if (!isValid) {
     return Promise.reject({ status: 400, message: 'Invalid ID provided' });

@@ -9,11 +9,9 @@ const reviewValidator = async (id) => {
       id = parseInt(id);
       if (id < 0) return false;
       const reviews = await fetchAllReviews({});
-      console.log(reviews);
       return id <= reviews.length ? 200 : 404;
     }
   } catch (err) {
-    console.log('This happens', err);
     return false;
   }
 };

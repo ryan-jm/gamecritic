@@ -8,7 +8,6 @@ exports.createAllTables = async () => {
     await createReviews();
     await createComments();
   } catch (err) {
-    console.log(err);
     return err;
   }
 };
@@ -17,7 +16,6 @@ exports.dropAllTables = async () => {
   try {
     await db.query('DROP TABLE IF EXISTS categories, users, reviews, comments');
   } catch (err) {
-    console.log(err);
     return err;
   }
 };
@@ -40,7 +38,6 @@ exports.seedAllTables = async (data) => {
     await seedFunc(queries.reviews, reviewData);
     await seedFunc(queries.comments, commentData);
   } catch (err) {
-    console.log(err);
     return err;
   }
 };
@@ -53,7 +50,6 @@ const createCategories = async () => {
     );
     return res;
   } catch (err) {
-    console.log(err);
     return err;
   }
 };
@@ -65,7 +61,6 @@ const createUsers = async () => {
     );
     return res;
   } catch (err) {
-    console.log(err);
     return err;
   }
 };
@@ -87,7 +82,6 @@ const createReviews = async () => {
     );
     return res;
   } catch (err) {
-    console.log(err);
     return err;
   }
 };
@@ -106,7 +100,6 @@ const createComments = async () => {
     );
     return res;
   } catch (err) {
-    console.log(err);
     return err;
   }
 };
@@ -121,7 +114,6 @@ const seedFunc = async (query, data) => {
     const res = await db.query(insert);
     return res;
   } catch (err) {
-    console.log(err);
     return err;
   }
 };
