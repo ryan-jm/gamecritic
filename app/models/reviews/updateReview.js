@@ -36,7 +36,6 @@ const updateReview = async ({ inc_votes = 0 }, id) => {
         return Promise.reject({ status: 404, message: 'No review found' });
       else return res.rows[0];
     } catch (err) {
-      console.log(err);
       return Promise.reject(err);
     }
   }
