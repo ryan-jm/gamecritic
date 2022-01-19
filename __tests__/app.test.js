@@ -427,7 +427,9 @@ describe('API Endpoints', () => {
 
         expect(comment).toEqual(expect.objectContaining(commentSchema));
         expect(comment.body).toBe('Look! Another test comment!');
-        expect(comment.username).toBe('bainesface');
+        expect(comment.author).toBe('bainesface');
+        expect(comment.review_id).toBe(3);
+        expect(comment.comment_id).toBe(7);
       });
 
       it('error: should return a 400 bad request if the username or body of the request is missing', async () => {
