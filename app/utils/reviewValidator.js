@@ -10,7 +10,7 @@ const reviewValidator = async (id) => {
       if (id < 0) return false;
       const reviews = await fetchAllReviews({});
       console.log(reviews);
-      return Boolean(id <= reviews.length) ? 200 : 404;
+      return id <= reviews.length ? 200 : 404;
     }
   } catch (err) {
     console.log('This happens', err);
