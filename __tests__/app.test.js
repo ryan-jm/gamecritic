@@ -566,6 +566,39 @@ describe('API Endpoints', () => {
       it('should respond with a 200 status code when request is successful', () => {
         return request(app).get('/api/users/bainesface').expect(200);
       });
+
+      it('should respond with a user entry following the userSchema', async () => {
+        const {
+          body: { user },
+        } = await request(app).get('/api/users/bainesface');
+        expect(user).toEqual(expect.objectContaining(userSchema));
+      });
+
+      it('should respond with the correct user entry', async () => {
+        const {
+          body: { user },
+        } = await request(app).get('/api/users/bainesface');
+
+        expect(user.username).toBe('bainesface');
+        expect(user.name).toBe('sarah');
+        expect(user.avatar_url).toBe(
+          'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4'
+        );
+      });
+
+      it('error: should respond with a 400 bad request if the username parameter is invalid', async () => {
+        const {
+          body: { message },
+        } = await request(app).get('/api/users/1234').expect(400);
+        expect(message).toBe('Invalid username provided');
+      });
+
+      it('error: should respond with a 404 if the username is valid but cannot be found in db', async () => {
+        const {
+          body: { message },
+        } = await request(app).get('/api/users/fakeuser44129').expect(404);
+        expect(message).toBe('User does not exist');
+      });
     });
   });
 });

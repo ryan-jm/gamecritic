@@ -5,7 +5,10 @@ const fetchSingleUser = async (user) => {
   const isValid = await userValidator(user);
 
   if (!isValid) {
-    return Promise.reject({ status: 400, message: 'Invalid user id provided' });
+    return Promise.reject({
+      status: 400,
+      message: 'Invalid username provided',
+    });
   } else if (isValid === 404) {
     return Promise.reject({
       status: 404,
