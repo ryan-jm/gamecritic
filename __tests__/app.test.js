@@ -555,5 +555,17 @@ describe('API Endpoints', () => {
         expect(users).toHaveLength(4);
       });
     });
+
+    describe.only('GET: /api/users/:id - get an individual user by id', () => {
+      const userSchema = {
+        username: expect.any(String),
+        name: expect.any(String),
+        avatar_url: expect.any(String),
+      };
+
+      it('should respond with a 200 status code when request is successful', () => {
+        return request(app).get('/api/users/2').expect(200);
+      });
+    });
   });
 });
