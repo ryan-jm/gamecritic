@@ -11,7 +11,7 @@ const commentValidator = async (id) => {
       if (id < 0) return false;
       /* Will turn this into an endpoint using MVC pattern at some point */
       const { rows: comments } = await db.query(`SELECT * FROM comments;`);
-      return Boolean(id <= comments.length);
+      return id <= comments.length ? 200 : 404;
     }
   } catch (err) {
     return false;
