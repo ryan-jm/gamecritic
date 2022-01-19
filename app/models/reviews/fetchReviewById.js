@@ -9,7 +9,7 @@ const fetchReviewById = async (id) => {
     return Promise.reject({ status: 400, message: 'Invalid ID provided' });
   } else if (isValid === 200) {
     const query = `
-    SELECT reviews.owner, reviews.title, reviews.review_id, reviews.review_body, reviews.designer, 
+    SELECT reviews.owner, reviews.title, reviews.review_id, reviews.designer, 
     reviews.review_img_url, reviews.category, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count
     FROM reviews
     LEFT JOIN comments 
