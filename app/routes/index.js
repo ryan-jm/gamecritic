@@ -1,5 +1,4 @@
 const router = require('express').Router();
-
 const categoriesRouter = require('./categories');
 const commentsRouter = require('./comments');
 const reviewsRouter = require('./reviews');

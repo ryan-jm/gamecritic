@@ -114,33 +114,6 @@ describe('App Utils', () => {
     });
   });
 
-  describe('#categoryValidator', () => {
-    it('should return a boolean value', async () => {
-      const output = await categoryValidator('test');
-      expect(output.constructor).toBe(Boolean);
-    });
-
-    it('pass: if the input value is a valid category, return true', async () => {
-      const output = await categoryValidator('dexterity');
-      expect(output).toBe(true);
-    });
-
-    it('fail: if the input value is not a valid category in the db, return false', async () => {
-      const output = await categoryValidator('test');
-      expect(output).toBe(false);
-    });
-
-    it('fail: if the input value is not a string, return false', async () => {
-      const outputNum = await categoryValidator(1);
-      const outputArray = await categoryValidator([1, 2, 'true']);
-      const outputNaN = await categoryValidator(NaN);
-
-      expect(outputNum).toBe(false);
-      expect(outputArray).toBe(false);
-      expect(outputNaN).toBe(false);
-    });
-  });
-
   describe('#userValidator', () => {
     it('should return a numeric value corresponding to the status code', async () => {
       const isValid = await userValidator('test');

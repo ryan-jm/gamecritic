@@ -1,5 +1,4 @@
-const commentValidator = require('../../utils/commentValidator');
-const idValidator = require('../../utils/idValidator');
+const { commentValidator, idValidator } = require('../../utils');
 const db = require('../../../db/connection');
 const format = require('pg-format');
 

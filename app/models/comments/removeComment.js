@@ -1,5 +1,5 @@
 const db = require('../../../db/connection');
-const commentValidator = require('../../utils/commentValidator');
+const { commentValidator } = require('../../utils');
 
 const removeComment = async (id) => {
   const isValid = await commentValidator(id);

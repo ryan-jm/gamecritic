@@ -1,6 +1,5 @@
 const format = require('pg-format');
 const db = require('../../../db/connection');
-const categoryValidator = require('../../utils/categoryValidator');
 
 const fetchAllReviews = async ({
   sort_by = 'created_at',
@@ -41,6 +40,19 @@ const fetchAllReviews = async ({
   } catch (err) {
     return Promise.reject(err);
   }
+};
+
+const categoryValidator = async (input) => {
+  if (typeof input !== 'string') return false;
+  try {
+    const { rows: categories } = await db.query('SELECT * FROM categories;');
+    for await (const category of categories) {
+      if (input === category.slug) return true;
+    }
+  } catch (err) {
+    return false;
+  }
+  return false;
 };
 
 module.exports = fetchAllReviews;
