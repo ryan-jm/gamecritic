@@ -6,10 +6,10 @@ const userValidator = async (input = '') => {
   const users = await fetchAllUsers();
 
   for (const user of users) {
-    if (input === user.username) return true;
+    if (input === user.username) return 200;
   }
 
-  return false;
+  return 404;
 };
 
 module.exports = userValidator;

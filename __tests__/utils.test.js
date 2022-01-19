@@ -3,6 +3,7 @@ const {
   reviewValidator,
   commentValidator,
   categoryValidator,
+  userValidator,
 } = require('../app/utils');
 const db = require('../db/connection');
 
@@ -74,24 +75,24 @@ describe('App Utils', () => {
   });
 
   describe('#commentValidator', () => {
-    it('should return a boolean', async () => {
+    it('should return a number corresponding to status code conventions', async () => {
       const output = await commentValidator(1);
-      expect(output.constructor).toBe(Boolean);
+      expect(output.constructor).toBe(Number);
     });
 
-    it('pass: less or equal to the total number of comments in db, return true', async () => {
+    it('pass: less or equal to the total number of comments in db, return 200 to indicate OK', async () => {
       const output = await commentValidator(2);
-      expect(output).toBe(true);
+      expect(output).toBe(200);
     });
 
-    it('pass: can be coerced into a number and is less than the total number of comments in db, return true', async () => {
+    it('pass: can be coerced into a number and is less than the total number of comments in db, return 200', async () => {
       const withString = await commentValidator('3');
-      expect(withString).toBe(true);
+      expect(withString).toBe(200);
     });
 
-    it('fail: greater than the total number of comments in db, return false', async () => {
+    it('fail: greater than the total number of comments in db, return 404 to indicate NOT FOUND', async () => {
       const output = await commentValidator(1000);
-      expect(output).toBe(false);
+      expect(output).toBe(404);
     });
 
     it('fail: can be coerced to a number, but is less than zero, return false', async () => {
@@ -137,6 +138,28 @@ describe('App Utils', () => {
       expect(outputNum).toBe(false);
       expect(outputArray).toBe(false);
       expect(outputNaN).toBe(false);
+    });
+  });
+
+  describe('#userValidator', () => {
+    it('should return a numeric value corresponding to the status code - 200 if user exists', async () => {
+      const isValid = await userValidator('mallionaire');
+      expect(isValid).toBe(200);
+    });
+
+    it('should return a 404 if the user does not exist in the database', async () => {
+      const isValid = await userValidator('notvaliduser');
+      expect(isValid).toBe(404);
+    });
+
+    it('fail: should return false if the request username is not a string', async () => {
+      const withNum = await userValidator(123873);
+      const withArray = await userValidator([1, 3, 'user please']);
+      const withNaN = await userValidator(NaN);
+
+      expect(withNum).toBe(false);
+      expect(withArray).toBe(false);
+      expect(withNaN).toBe(false);
     });
   });
 });
