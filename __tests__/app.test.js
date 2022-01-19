@@ -156,9 +156,12 @@ describe('API Endpoints', () => {
           .get('/api/reviews?category=social deduction')
           .expect(200);
 
+        expect(dexterityOnly).toHaveLength(1);
         dexterityOnly.forEach((dexReviews) =>
           expect(dexReviews.category).toBe('dexterity')
         );
+
+        expect(socialDeductionOnly).toHaveLength(11);
         socialDeductionOnly.forEach((sdReviews) =>
           expect(sdReviews.category).toBe('social deduction')
         );
@@ -194,6 +197,7 @@ describe('API Endpoints', () => {
           category: 'social deduction',
           votes: 5,
         };
+
         const res = await request(app).get('/api/reviews/3');
         const {
           body: { review },
@@ -220,6 +224,17 @@ describe('API Endpoints', () => {
     });
 
     describe('PATCH: /api/reviews/:id - Patch a review by ID', () => {
+      const patchSchema = {
+        owner: expect.any(String),
+        title: expect.any(String),
+        review_id: expect.any(Number),
+        designer: expect.any(String),
+        review_img_url: expect.any(String),
+        category: expect.any(String),
+        created_at: expect.any(String),
+        votes: expect.any(Number),
+      };
+
       it('should respond with a 200 status code if successful', () => {
         return request(app)
           .patch('/api/reviews/3')
@@ -227,9 +242,17 @@ describe('API Endpoints', () => {
           .expect(200);
       });
 
-      delete reviewSchema.comment_count;
-
       it('positives integers: should respond with the updated review entry', async () => {
+        const patchedReview = {
+          title: 'Ultimate Werewolf',
+          designer: 'Akihisa Okui',
+          owner: 'bainesface',
+          review_img_url:
+            'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+          category: 'social deduction',
+          votes: 15,
+        };
+
         const {
           body: { review },
         } = await request(app)
@@ -237,8 +260,12 @@ describe('API Endpoints', () => {
           .send({ inc_votes: 10 })
           .expect(200);
 
-        expect(review.votes).toBe(15);
-        expect(review).toEqual(expect.objectContaining(reviewSchema));
+        expect(review.votes).toBe(patchedReview.votes);
+        expect(review.title).toBe(patchedReview.title);
+        expect(review.owner).toBe(patchedReview.owner);
+        expect(review.review_img_url).toBe(patchedReview.review_img_url);
+        expect(review.category).toBe(patchedReview.category);
+        expect(review).toEqual(expect.objectContaining(patchSchema));
       });
 
       it('negative integers: should respond with the updated review entry', async () => {
@@ -250,7 +277,7 @@ describe('API Endpoints', () => {
           .expect(200);
 
         expect(review.votes).toBe(1);
-        expect(review).toEqual(expect.objectContaining(reviewSchema));
+        expect(review).toEqual(expect.objectContaining(patchSchema));
       });
 
       it('error: should respond with a 404 not found response if no review entry can be found', async () => {
