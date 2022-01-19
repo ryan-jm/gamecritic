@@ -528,7 +528,7 @@ describe('API Endpoints', () => {
       created_at: expect.any(String),
     };
 
-    describe.only('PATCH: /api/comments/:id - update the vote count for a comment', () => {
+    describe('PATCH: /api/comments/:id - update the vote count for a comment', () => {
       it('should return a 200 response on a successful update', () => {
         return request(app)
           .patch('/api/comments/2')
