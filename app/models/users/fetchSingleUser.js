@@ -2,7 +2,6 @@ const { userValidator } = require('../../utils');
 const db = require('../../../db/connection');
 
 const fetchSingleUser = async (user) => {
-  console.log(userValidator);
   const isValid = await userValidator(user);
 
   if (!isValid) {
