@@ -1,7 +1,6 @@
 const format = require('pg-format');
 const db = require('../../../db/connection');
-const reviewValidator = require('../../utils/reviewValidator');
-const userValidator = require('../../utils/userValidator');
+const { reviewValidator, userValidator } = require('../../utils/');
 
 const insertComment = async ({ username, body }, id) => {
   const validReview = await reviewValidator(id);
