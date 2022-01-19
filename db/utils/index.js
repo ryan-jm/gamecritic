@@ -82,7 +82,7 @@ const createReviews = async () => {
         votes INT DEFAULT 0,
         category VARCHAR(255) REFERENCES categories(slug) NOT NULL,
         owner TEXT REFERENCES users(username) NOT NULL, 
-        created_at TIMESTAMP NOT NULL
+        created_at TIMESTAMP DEFAULT NOW()
         );`
     );
     return res;
@@ -100,7 +100,7 @@ const createComments = async () => {
         author TEXT REFERENCES users(username) NOT NULL,
         review_id INT REFERENCES reviews(review_id) NOT NULL,
         votes INT DEFAULT 0,
-        created_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
         body TEXT NOT NULL
         );`
     );
