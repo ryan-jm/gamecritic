@@ -1,15 +1,13 @@
 const db = require('../../db/connection');
 const fetchAllUsers = require('../models/users/fetchAllUsers');
+const idValidator = require('./idValidator');
 
-const userValidator = async (input = '') => {
-  if (typeof input !== 'string') return false;
+const userValidator = async (id) => {
+  if (!idValidator(id)) return false;
+  else id = parseInt(id);
   const users = await fetchAllUsers();
 
-  for (const user of users) {
-    if (input === user.username) return 200;
-  }
-
-  return 404;
+  return id <= users.length ? 200 : 404;
 };
 
 module.exports = userValidator;
