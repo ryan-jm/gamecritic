@@ -8,10 +8,7 @@ const {
 } = require('../../controllers/reviews');
 
 reviewRouter.get('/', getAllReviews);
-reviewRouter.get('/:id', getReviewById);
-reviewRouter.patch('/:id', patchReview);
-
-reviewRouter.get('/:id/comments', getComments);
-reviewRouter.post('/:id/comments', postComment);
+reviewRouter.route('/:id').get(getReviewById).patch(patchReview);
+reviewRouter.route('/:id/comments').get(getComments).post(postComment);
 
 module.exports = reviewRouter;
