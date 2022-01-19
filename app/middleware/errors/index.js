@@ -1,11 +1,9 @@
 exports.throwStatusError = (err, res) => {
-  console.error('throwStatusError', err);
   const { status, message } = err;
   return res.status(status).send({ message });
 };
 
 exports.throwCodeError = (err, res) => {
-  console.error('throwCodeError', err);
   const { code } = err;
   switch (code) {
     case 'P2202':
@@ -17,6 +15,5 @@ exports.throwCodeError = (err, res) => {
 };
 
 exports.throwInternalError = (err, res) => {
-  console.error('throwInternalError', err);
   return res.status(500).send({ message: 'Internal Server Error' });
 };
