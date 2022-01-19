@@ -1,5 +1,6 @@
 const format = require('pg-format');
 const db = require('../../../db/connection');
+const { categoryValidator } = require('../../utils');
 
 const fetchAllReviews = async ({
   sort_by = 'created_at',
@@ -7,8 +8,16 @@ const fetchAllReviews = async ({
   category = undefined,
 }) => {
   let whereClause = '';
-  if (category) whereClause = format(`WHERE reviews.category = %L`, category);
-  if (!/^asc$|^desc$/i.test(order)) order = 'desc';
+
+  if (category) {
+    const categoryValid = await categoryValidator(category);
+    if (!categoryValid)
+      return Promise.reject({ status: 404, message: 'Category non-existent' });
+    else whereClause = format(`WHERE reviews.category = %L`, category);
+  }
+
+  if (!/^asc$|^desc$/i.test(order))
+    return Promise.reject({ status: 400, message: 'Invalid order query' });
 
   const query = format(
     `
@@ -28,9 +37,7 @@ const fetchAllReviews = async ({
 
   try {
     const res = await db.query(query);
-    if (res.rows.length === 0)
-      return Promise.reject({ status: 404, message: 'No reviews found' });
-    else return res.rows;
+    return res.rows;
   } catch (err) {
     return Promise.reject(err);
   }
