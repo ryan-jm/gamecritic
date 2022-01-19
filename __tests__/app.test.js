@@ -520,6 +520,96 @@ describe('API Endpoints', () => {
   });
 
   describe('Comments routes', () => {
+    const commentSchema = {
+      body: expect.any(String),
+      votes: expect.any(Number),
+      author: expect.any(String),
+      review_id: expect.any(Number),
+      created_at: expect.any(String),
+    };
+
+    describe.only('PATCH: /api/comments/:id - update the vote count for a comment', () => {
+      it('should return a 200 response on a successful update', () => {
+        return request(app)
+          .patch('/api/comments/2')
+          .send({ inc_votes: 1 })
+          .expect(200);
+      });
+
+      it('should return the updated comment entry, following the commentSchema', async () => {
+        const {
+          body: { comment },
+        } = await request(app).patch('/api/comments/2').send({ inc_votes: 1 });
+
+        expect(comment).toEqual(expect.objectContaining(commentSchema));
+      });
+
+      it('should update the correct comment only', async () => {
+        const oldComment = {
+          body: "I didn't know dogs could play games",
+          votes: 10,
+          author: 'philippaclaire9',
+          review_id: 3,
+        };
+
+        const {
+          body: { comment },
+        } = await request(app).patch('/api/comments/3').send({ inc_votes: 1 });
+
+        expect(comment.body).toBe(oldComment.body);
+        expect(comment.author).toBe(oldComment.author);
+        expect(comment.votes).toBe(11);
+        expect(comment.review_id).toBe(oldComment.review_id);
+      });
+
+      it('should return a 200 response with a non-updated comment if there is no inc_votes property', async () => {
+        const oldComment = {
+          body: "I didn't know dogs could play games",
+          votes: 10,
+          author: 'philippaclaire9',
+          review_id: 3,
+        };
+
+        const {
+          body: { comment },
+        } = await request(app).patch('/api/comments/3').send({}).expect(200);
+        expect(comment.body).toBe(oldComment.body);
+        expect(comment.votes).toBe(oldComment.votes);
+        expect(comment.author).toBe(oldComment.author);
+        expect(comment.review_id).toBe(oldComment.review_id);
+      });
+
+      it('error: should return a 400 bad request if the inc_votes value is invalid (not a number or coercable)', async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .patch('/api/comments/3')
+          .send({ inc_votes: 'not-valid' })
+          .expect(400);
+        expect(message).toBe('Invalid inc_votes value');
+      });
+
+      it('error: should return a 400 bad request if the comment id is invalid (not a number or coercable)', async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .patch('/api/comments/not-a-valid-comment')
+          .send({ inc_votes: 1 })
+          .expect(400);
+        expect(message).toBe('Invalid comment id');
+      });
+
+      it('error: should return a 404 not found if the comment id is valid but does not exist in the db', async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .patch('/api/comments/999')
+          .send({ inc_votes: 1 })
+          .expect(404);
+        expect(message).toBe('Comment does not exist');
+      });
+    });
+
     describe('DELETE: /api/comments/:id - delete the corresponding comment', () => {
       it('should return a 204 status code with no content if successful', () => {
         return request(app).delete('/api/comments/2').expect(204);
@@ -556,7 +646,7 @@ describe('API Endpoints', () => {
       });
     });
 
-    describe.only('GET: /api/users/:username - get an individual user by username', () => {
+    describe('GET: /api/users/:username - get an individual user by username', () => {
       const userSchema = {
         username: expect.any(String),
         name: expect.any(String),
