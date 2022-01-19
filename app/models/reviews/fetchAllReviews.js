@@ -12,13 +12,13 @@ const fetchAllReviews = async ({
 
   const query = format(
     `
-    SELECT reviews.owner, reviews.title, reviews.review_id, reviews.review_body, reviews.designer, 
+    SELECT reviews.owner, reviews.title, reviews.review_id, reviews.designer, 
     reviews.review_img_url, reviews.category, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count
     FROM reviews
     LEFT JOIN comments 
     ON comments.review_id = reviews.review_id
     %s
-    GROUP BY reviews.owner, reviews.title, reviews.review_id, reviews.review_body, reviews.designer, 
+    GROUP BY reviews.owner, reviews.title, reviews.review_id, reviews.designer, 
     reviews.review_img_url, reviews.category, reviews.created_at, reviews.votes
     ORDER BY %s %s`,
     whereClause,
