@@ -52,7 +52,6 @@ describe('API Endpoints', () => {
       owner: expect.any(String),
       title: expect.any(String),
       review_id: expect.any(Number),
-      review_body: expect.any(String),
       designer: expect.any(String),
       review_img_url: expect.any(String),
       category: expect.any(String),
@@ -186,12 +185,27 @@ describe('API Endpoints', () => {
       });
 
       it('should respond with a "review" object containing the values of the requested review', async () => {
+        const reviewThree = {
+          title: 'Ultimate Werewolf',
+          designer: 'Akihisa Okui',
+          owner: 'bainesface',
+          review_img_url:
+            'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+          category: 'social deduction',
+          votes: 5,
+        };
         const res = await request(app).get('/api/reviews/3');
         const {
           body: { review },
         } = res;
         expect(review).toBeInstanceOf(Object);
         expect(review).toEqual(expect.objectContaining(reviewSchema));
+        expect(review.title).toBe(reviewThree.title);
+        expect(review.owner).toBe(reviewThree.owner);
+        expect(review.designer).toBe(reviewThree.designer);
+        expect(review.review_img_url).toBe(reviewThree.review_img_url);
+        expect(review.category).toBe(reviewThree.category);
+        expect(review.votes).toBe(reviewThree.votes);
       });
 
       it('error: should respond with a 404 not found if no review entry can be found', async () => {
