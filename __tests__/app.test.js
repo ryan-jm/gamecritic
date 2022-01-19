@@ -2,7 +2,7 @@ const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
 const seed = require('../db/seeds/seed.js');
 const app = require('../app');
-const NCGamesAPI = require('../app/info');
+const NCGamesAPI = require('../app/endpoints.json');
 
 const request = require('supertest');
 

@@ -4,7 +4,7 @@ const categoriesRouter = require('./categories');
 const commentsRouter = require('./comments');
 const reviewsRouter = require('./reviews');
 const usersRouter = require('./users');
-const NCGamesAPI = require('../info');
+const NCGamesAPI = require('../endpoints.json');
 
 router.get('/', (req, res, next) => {
   res.status(200).send({ NCGamesAPI });
