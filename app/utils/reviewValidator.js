@@ -1,5 +1,5 @@
 const { idValidator } = require('./');
-const fetchAllReviews = require('../models/reviews/fetchAllReviews');
+const { fetchAllReviews } = require('../models/reviews');
 
 const reviewValidator = async (id) => {
   /* Check that the review_id is valid within the database */

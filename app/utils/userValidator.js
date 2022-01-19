@@ -1,4 +1,4 @@
-const fetchAllUsers = require('../models/users/fetchAllUsers');
+const { fetchAllUsers } = require('../models/users/');
 const idValidator = require('./idValidator');
 
 const userValidator = async (username) => {
