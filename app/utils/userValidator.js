@@ -1,6 +1,4 @@
-const db = require('../../db/connection');
 const fetchAllUsers = require('../models/users/fetchAllUsers');
-const idValidator = require('./idValidator');
 
 const userValidator = async (username) => {
   if (typeof username !== 'string') return false;
