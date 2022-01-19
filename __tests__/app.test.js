@@ -556,7 +556,7 @@ describe('API Endpoints', () => {
       });
     });
 
-    describe.only('GET: /api/users/:id - get an individual user by id', () => {
+    describe.only('GET: /api/users/:username - get an individual user by username', () => {
       const userSchema = {
         username: expect.any(String),
         name: expect.any(String),
@@ -564,7 +564,7 @@ describe('API Endpoints', () => {
       };
 
       it('should respond with a 200 status code when request is successful', () => {
-        return request(app).get('/api/users/2').expect(200);
+        return request(app).get('/api/users/bainesface').expect(200);
       });
     });
   });
