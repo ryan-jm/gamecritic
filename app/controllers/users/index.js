@@ -1,2 +1,2 @@
 exports.getAllUsers = require('./getAllUsers');
-exports.getUserById = require('./getUserById');
+exports.getSingleUser = require('./getSingleUser');
