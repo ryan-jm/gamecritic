@@ -13,8 +13,8 @@ const fetchSingleUser = async (user) => {
     });
   } else {
     try {
-      const res = await db.query(`SELECT * FROM users WHERE user_id = $1`, [
-        id,
+      const res = await db.query(`SELECT * FROM users WHERE username = $1`, [
+        user,
       ]);
       return res.rows[0];
     } catch (err) {
