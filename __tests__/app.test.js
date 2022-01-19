@@ -28,13 +28,13 @@ describe('API Endpoints', () => {
       });
 
       it('should return an array of categories with the length of 4', async () => {
-        const res = await request(app).get('/api/categories').expect(200);
+        const res = await request(app).get('/api/categories');
         expect(res.body.categories).toBeInstanceOf(Array);
         expect(res.body.categories).toHaveLength(4);
       });
 
       it('the returned array should consist of category entries with a slug and description property', async () => {
-        const res = await request(app).get('/api/categories').expect(200);
+        const res = await request(app).get('/api/categories');
         res.body.categories.forEach((category) => {
           expect(category).toEqual(
             expect.objectContaining({
@@ -67,7 +67,7 @@ describe('API Endpoints', () => {
       });
 
       it('should respond with an array of review entries which follow the review schema', async () => {
-        const res = await request(app).get('/api/reviews/').expect(200);
+        const res = await request(app).get('/api/reviews/');
         const {
           body: { reviews },
         } = res;
@@ -186,7 +186,7 @@ describe('API Endpoints', () => {
       });
 
       it('should respond with a "review" object containing the values of the requested review', async () => {
-        const res = await request(app).get('/api/reviews/3').expect(200);
+        const res = await request(app).get('/api/reviews/3');
         const {
           body: { review },
         } = res;
@@ -280,7 +280,7 @@ describe('API Endpoints', () => {
       it('should respond with an array of comments following the comment schema', async () => {
         const {
           body: { comments },
-        } = await request(app).get('/api/reviews/3/comments').expect(200);
+        } = await request(app).get('/api/reviews/3/comments');
 
         expect(comments).toBeInstanceOf(Array);
         comments.forEach((comment) =>
@@ -325,13 +325,10 @@ describe('API Endpoints', () => {
       it('should respond with the newly posted comment entry following the comment schema', async () => {
         const {
           body: { comment },
-        } = await request(app)
-          .post('/api/reviews/3/comments')
-          .send({
-            username: 'bainesface',
-            body: 'Look! Another test comment!',
-          })
-          .expect(201);
+        } = await request(app).post('/api/reviews/3/comments').send({
+          username: 'bainesface',
+          body: 'Look! Another test comment!',
+        });
         expect(comment).toEqual(expect.objectContaining(commentSchema));
       });
 
