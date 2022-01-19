@@ -280,6 +280,30 @@ describe('API Endpoints', () => {
         expect(review).toEqual(expect.objectContaining(patchSchema));
       });
 
+      it('when inc_votes has no value, return a 200 status code and the unchanged review entry', async () => {
+        const reviewFour = {
+          title: 'Dolor reprehenderit',
+          designer: 'Gamey McGameface',
+          owner: 'mallionaire',
+          review_img_url:
+            'https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+          category: 'social deduction',
+          votes: 7,
+        };
+
+        const {
+          body: { review },
+        } = await request(app).patch('/api/reviews/4').send({}).expect(200);
+
+        expect(review).toEqual(expect.objectContaining(patchSchema));
+        expect(review.title).toBe(reviewFour.title);
+        expect(review.designer).toBe(reviewFour.designer);
+        expect(review.owner).toBe(reviewFour.owner);
+        expect(review.review_img_url).toBe(reviewFour.review_img_url);
+        expect(review.votes).toBe(reviewFour.votes);
+        expect(review.category).toBe(reviewFour.category);
+      });
+
       it('error: should respond with a 404 not found response if no review entry can be found', async () => {
         const res = await request(app)
           .patch('/api/reviews/555')
