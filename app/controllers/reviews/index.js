@@ -46,7 +46,7 @@ exports.getComments = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const comments = await fetchComments(id);
+    const comments = await fetchComments(id, req.query);
     return res.status(200).send({ comments });
   } catch (err) {
     return next(err);
