@@ -14,12 +14,18 @@
     "/api/reviews": {
       "params": ["/:id", "/:id/comments"],
       "queries": ["?sort_by", "?order", "?limit", "?p", "?category"],
-      "response": "All reviews or review(s) corresponding to params / queries"
+      "response": "All reviews or review(s) corresponding to params / queries - when using the /:id/comments param, returns all comments of the specified review",
+      "defaults": "Page is set to 1, limit is set to 10, sort_by is set to created_at, order is descending"
+    },
+    "/api/users": {
+      "params": ["/:username"],
+      "queries": [],
+      "response": "All users or the user specified with the /:username parameter"
     }
   },
   "POST": {
     "/api/reviews/:id/comments": {
-      "expeced": {
+      "expected": {
         "username": "A unique, valid username",
         "body": "The comment body"
       },
@@ -29,9 +35,15 @@
   "PATCH": {
     "/api/reviews/:id": {
       "expected": {
-        "inc_votes": "<int>"
+        "inc_votes": "<integer>"
       },
       "response": "The patched review"
+    },
+    "/api/comments/:id": {
+      "expected": {
+        "inc_votes": "<integer>"
+      },
+      "response": "The patched comment"
     }
   },
   "DELETE": {
