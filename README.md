@@ -42,23 +42,23 @@ If you would like to view this API, you can [click here](https://game-review-for
 
 ### Prerequisites:
 
-- [ ] Fork and clone the repository on your machine.
+- Fork and clone the repository on your machine.
 
-- [ ] Make sure you have [Node >v14](https://nodejs.org/en/) and the latest LTS version of [PostgreSQL](https://www.postgresql.org/) installed.
+- Make sure you have [Node >v14](https://nodejs.org/en/) and the latest LTS version of [PostgreSQL](https://www.postgresql.org/) installed.
 
 ### Installation:
 
-- [ ] `cd` into the cloned repo and run `npm install` to install the dependencies.
+- `cd` into the cloned repo and run `npm install` to install the dependencies.
 
-- [ ] Once all dependencies are installed, create a `.env.test` and `.env.development` file within the root directory of the cloned repo.
+- Once all dependencies are installed, create a `.env.test` and `.env.development` file within the root directory of the cloned repo.
 
 > **.env.development:** `PGDATABASE=nc_games`
 
 > **.env.test:** `PGDATABASE=nc_games_test`
 
-- [ ] Once the `.env` files have been created, run the `npm run setup-dbs` command followed by `npm run seed` to create and populate the necessary tables.
+- Once the `.env` files have been created, run the `npm run setup-dbs` command followed by `npm run seed` to create and populate the necessary tables.
 
-- [ ] Finally, run `npm test` to make sure that all of the tests are passing.
+- Finally, run `npm test` to make sure that all of the tests are passing.
 
 > _Note: you can use the `npm run dev` command to start the server and explore the API with an API client such as [Insomnia](https://insomnia.rest/download) or [Postman](https://www.postman.com/)._
 
