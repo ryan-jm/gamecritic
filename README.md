@@ -68,11 +68,11 @@ Make a GET request to `/api/` to view all of the available endpoints and their q
 
 ## Roadmap
 
-- [] Integrate JWT authorization to protect endpoints.
+- [ ] Integrate JWT authorization to protect endpoints.
 
-- [] Implement image storage and random generation of images for categories.
+- [ ] Implement image storage and random generation of images for categories.
 
-- [] Add more endpoints.
+- [ ] Add more endpoints.
 
 ## License
 
