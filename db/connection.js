@@ -15,7 +15,9 @@ const config =
   ENV === 'production'
     ? {
         connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnathorized: false },
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }
     : {};
 
