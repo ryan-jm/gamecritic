@@ -18,7 +18,6 @@
 
 The purpose of this API is to enable me to learn about utilising Express.js and PostgreSQL and how to utilise them in conjunction to create a stable API with a plethora of endpoints, with versatile queries and parameters on each endpoint. The API is considered a RESTful API with stateless requests and a uniform interface.
 
----
 
 **Concepts I have learned from this project:**
 
