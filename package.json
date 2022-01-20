@@ -4,7 +4,7 @@
   "description": "bc-nc-games",
   "main": "index.js",
   "scripts": {
-    "start": "node ./app/listen.js && npm run seed",
+    "start": "npm run seed && node ./app/listen.js",
     "setup-dbs": "psql -f ./db/setup.sql",
     "dev": "npm run seed && nodemon ./app/listen.js",
     "seed": "node ./db/seeds/run-seed.js",
