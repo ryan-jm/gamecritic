@@ -46,7 +46,7 @@ If you would like to view this API, you can [click here](https://game-review-for
 
 - [] Make sure you have [Node >v14](https://nodejs.org/en/) and the latest LTS version of [PostgreSQL](https://www.postgresql.org/) installed.
 
-###Installation:
+### Installation:
 
 - [] `cd` into the cloned repo and run `npm install` to install the dependencies.
 
