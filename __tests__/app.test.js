@@ -89,6 +89,33 @@ describe('API Endpoints', () => {
         });
       });
 
+      it('pagination: should automatically limit to 10 results and page 1', async () => {
+        const {
+          body: { reviews, page, limit },
+        } = await request(app).get('/api/reviews');
+        expect(reviews).toHaveLength(10);
+        expect(page).toBe(1);
+        expect(limit).toBe(10);
+      });
+
+      it('pagination: current page can be changed by using the ?p query', async () => {
+        const {
+          body: { reviews, page, limit },
+        } = await request(app).get('/api/reviews?p=2');
+        expect(reviews).toHaveLength(3);
+        expect(page).toBe('2');
+        expect(limit).toBe(10);
+      });
+
+      it('pagination: limit can be changed by using the ?limit query', async () => {
+        const {
+          body: { reviews, page, limit },
+        } = await request(app).get('/api/reviews?limit=13');
+        expect(reviews).toHaveLength(13);
+        expect(page).toBe(1);
+        expect(limit).toBe('13');
+      });
+
       it('queries: works with "sort_by" queries', async () => {
         const {
           body: { reviews: byReviewId },
