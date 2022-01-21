@@ -72,7 +72,7 @@ Make a GET request to `/api` to view all of the available endpoints and their qu
 
 ## License
 
-This API is released under the terms of MIT License. For more details [click here](https://mit-license.org/).
+This API is released under the terms of MIT License. For more details [click here](/LICENSE).
 
 ## Acknowledgements
 
