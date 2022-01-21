@@ -9,16 +9,20 @@ const app = require('../app');
 const NCGamesAPI = require('../app/endpoints.json');
 const supertest = require('supertest');
 const defaults = require('superagent-defaults');
+const jwt = require('jsonwebtoken');
 
 const request = defaults(supertest(app));
-const testToken = process.env.TEST_TOKEN;
-
-request.set('token', testToken); // Set authorization token before tests.
+const secret = process.env.JWTSECRET;
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
+beforeAll(() => {
+  /* Generate a test token and set it before all tests. */
+  const testToken = jwt.sign('testing', secret);
+  request.set('token', testToken);
+});
 
-describe('\nAPI Endpoints', () => {
+describe('API Endpoints', () => {
   describe('GET: /api/ - Health Check / Endpoint Info', () => {
     it('should respond with a 200 status code', () => {
       return request.get('/api').expect(200);
@@ -721,33 +725,95 @@ describe('\nAPI Endpoints', () => {
       });
     });
   });
-});
 
-describe('\nJWT Authorization', () => {
-  it('should check for a token value in the headers, if one is not present, return 401 not authorised', async () => {
-    request.set('token', 'faketoken'); // Change the authorization token to something unauthorised.
+  describe('\nJWT Authorization', () => {
+    it('should check for a token value in the headers, if one is not present, return 401 not authorised', async () => {
+      /* Remove the authorization token for testing */
+      request.set('token', '');
 
-    const {
-      body: { message },
-    } = await request.get('/api/reviews').expect(401);
-    expect(message).toBe(
-      'Unauthorized. Make a GET request to /api/auth to get an access token.'
-    );
+      const {
+        body: { message },
+      } = await request.get('/api/reviews').expect(401);
+      expect(message).toBe(
+        'Unauthorized. Make a GET request to /api/auth to get an access token.'
+      );
+    });
 
-    request.set('token', testToken); // Set the authorization back to a legitimate token for future tests.
-  });
+    it('GET: /api/ is not protected - allows user to visit without an authorization token', () => {
+      return request.get('/api').expect(200);
+    });
 
-  it('GET: /api/ is not protected - allows user to visit without an authorization token', () => {
-    return request.get('/api').expect(200);
-  });
+    describe('AUTH > GET: /api/auth', () => {
+      const authInstructions = {
+        1: 'Send a POST request to this endpoint with the body containing your username and password credentials',
+        '1 - Example POST Body': {
+          username: 'test-user',
+          password: 'password123',
+        },
+        2: 'If your credentials are valid, you will receive a response containing your JWT Auth Token.',
+        3: "Set this token in your headers as the following key-value pair: 'token': 'example-jwt-token'",
+        4: 'Now you can access all of the endpoints displayed on /api',
+        Note: 'Want to test this out? Send a POST request to this endpoint with the example body above!',
+      };
 
-  it('with a valid authorization token, allows access to the endpoint', async () => {
-    const {
-      body: { review },
-    } = await request.get('/api/reviews/2').expect(200);
+      it('should allow user to access the endpoint without an authorization token, returns a 200 status code', () => {
+        /* Remove the authorization token for testing */
+        request.set('token', '');
+        return request.get('/api/auth').expect(200);
+      });
 
-    expect(review.title).toBe('Jenga');
-    expect(review.owner).toBe('philippaclaire9');
-    expect(review.designer).toBe('Leslie Scott');
+      it('should respond with instructions detailing how the user can get an auth token via POST', async () => {
+        const {
+          body: { instructions },
+        } = await request.get('/api/auth');
+
+        expect(instructions).toEqual(authInstructions);
+      });
+    });
+
+    describe('AUTH > POST: /api/auth', () => {
+      it('returns a 201 status code upon successful authentication', () => {
+        return request
+          .post('/api/auth')
+          .send({ username: 'test-user', password: 'password123' })
+          .expect(201);
+      });
+
+      it('error: returns a 400 response when credentials are invalid or missing', async () => {
+        const {
+          body: { message },
+        } = await request
+          .post('/api/auth')
+          .send({ username: 'test' })
+          .expect(400);
+        expect(message).toBe('Missing credentials');
+      });
+
+      it('returns a signed JWT token when passed valid credentials', async () => {
+        const username = 'test-user';
+        const password = 'password123';
+        const expectedToken = jwt.sign(username + password, secret);
+
+        const {
+          body: { token },
+        } = await request.post('/api/auth').send({ username, password });
+
+        expect(token).toBe(expectedToken);
+
+        /* Use this generated token to test access to other endpoints */
+        request.set('token', token);
+      });
+
+      it('once the token has been received and set in the headers, access to endpoints is granted', async () => {
+        await request.get('/api/reviews').expect(200);
+        await request.get('/api/categories').expect(200);
+        await request.get('/api/reviews/5').expect(200);
+        await request.get('/api/users').expect(200);
+        await request
+          .patch('/api/reviews/3')
+          .send({ inc_votes: 1 })
+          .expect(200);
+      });
+    });
   });
 });
