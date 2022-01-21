@@ -1,8 +1,8 @@
 {
-  "name": "be-nc-games",
+  "name": "GameCritic",
   "version": "1.0.0",
-  "description": "bc-nc-games",
-  "main": "index.js",
+  "description": "A simple, RESTful API created to learn Express and Postgres",
+  "main": "./app/listen.js",
   "scripts": {
     "start": "npm run seed && node ./app/listen.js",
     "setup-dbs": "psql -f ./db/setup.sql",
@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/northcoders/be-nc-games.git"
+    "url": "git+https://github.com/sanctumlysis/gamecritic.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/northcoders/be-nc-games/issues"
+    "url": "https://github.com/sanctumlysis/gamecritic/issues"
   },
-  "homepage": "https://github.com/northcoders/be-nc-games#readme",
+  "homepage": "https://github.com/sanctumlysis/gamecritic#readme",
   "dependencies": {
     "dotenv": "^14.2.0",
     "express": "^4.17.2",
