@@ -13,7 +13,11 @@ if (!secret) {
 }
 
 const auth = async (req, res, next) => {
-  if (req.originalUrl === '/api/auth' || req.originalUrl === '/api')
+  const path = req.originalUrl;
+  if (
+    /^.{0,1}api.{0,1}$/g.test(path) ||
+    /^.{0,1}api.{0,1}auth.{0,1}$/g.test(path)
+  )
     return next();
   else {
     const { token } = req.headers;
