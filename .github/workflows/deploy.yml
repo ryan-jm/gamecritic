@@ -28,5 +28,5 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run API Tests
+      - name: Run Test-suites
         run: PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password npm t
