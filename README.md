@@ -1,6 +1,7 @@
 <h1 align="center"> GameCritic </h1>
 <p align="center">A simple, RESTful API created to learn Express and Postgres</p>
 <p align="center"><a href="https://gamecritic.herokuapp.com/api">Explore</a>
+<p align="center">![Website](https://img.shields.io/website?down_color=red&down_message=DOWN&style=for-the-badge&up_color=green&up_message=UP&url=https%3A%2F%2Fgamecritic.herokuapp.com%2Fapi%2F) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/sanctumlysis/gamecritic?style=for-the-badge) ![Build Status](https://img.shields.io/github/workflow/status/sanctumlysis/gamecritic/test-and-deploy?style=for-the-badge)</p>
 
 ## Table Of Contents
 
@@ -29,12 +30,11 @@ The purpose of this API is to enable me to learn about utilising Express.js and 
 - Testing asynchronous code with [Jest](https://jestjs.io/).
 
 - Hosting with [Heroku](https://heroku.com).
-  
 - How to utilise JWTs for authentication.
 
 ## Built With
 
-<img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="JavaScript"/> <img src="https://img.shields.io/badge/Express.js-0F9A41?style=for-the-badge&logo=express" alt="Express" /> <img src="https://img.shields.io/badge/Postgres-32668E?style=for-the-badge&logo=postgresql&logoColor=FFF" alt="Postgres" /> <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest" alt="Jest" />
+<img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="JavaScript"/> <img src="https://img.shields.io/badge/Express.js-0F9A41?style=for-the-badge&logo=express" alt="Express" /> <img src="https://img.shields.io/badge/Postgres-32668E?style=for-the-badge&logo=postgresql&logoColor=FFF" alt="Postgres" /> <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest" alt="Jest" /> <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white" alt="JWT">
 
 ## Getting Started
 
