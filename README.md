@@ -1,7 +1,7 @@
 <h1 align="center"> GameCritic </h1>
 <p align="center">A simple, RESTful API created to learn Express and Postgres</p>
 <p align="center"><a href="https://gamecritic.herokuapp.com/api">Explore</a>
-<p align="center">![Website](https://img.shields.io/website?down_color=red&down_message=DOWN&style=for-the-badge&up_color=green&up_message=UP&url=https%3A%2F%2Fgamecritic.herokuapp.com%2Fapi%2F) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/sanctumlysis/gamecritic?style=for-the-badge) ![Build Status](https://img.shields.io/github/workflow/status/sanctumlysis/gamecritic/test-and-deploy?style=for-the-badge)</p>
+<p align="center"><img src="https://img.shields.io/website?down_color=red&down_message=DOWN&style=for-the-badge&up_color=green&up_message=UP&url=https%3A%2F%2Fgamecritic.herokuapp.com%2Fapi%2F" alt="Website" /> <img alt="Code Size" src="https://img.shields.io/github/languages/code-size/sanctumlysis/gamecritic?style=for-the-badge" /> <img alt="Build Status" src="https://img.shields.io/github/workflow/status/sanctumlysis/gamecritic/test-and-deploy?style=for-the-badge" /></p>
 
 ## Table Of Contents
 
