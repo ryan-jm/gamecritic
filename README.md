@@ -37,7 +37,7 @@ The purpose of this API is to enable me to learn about utilising Express.js and 
 
 ## Getting Started
 
-If you would like to view this API, you can [click here](https://game-review-forum.herokuapp.com/api/) to view and interact with it through your browser (Firefox/Chrome recommended for the built-in JSON prettier). Alternatively, you can follow the steps below to have it operating locally on your machine.
+If you would like to view this API, you can [click here](https://gamecritic.herokuapp.com/api/) to view and interact with it through your browser (Firefox/Chrome recommended for the built-in JSON prettier). Alternatively, you can follow the steps below to have it operating locally on your machine.
 
 ### Prerequisites:
 
