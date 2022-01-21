@@ -1,6 +1,6 @@
 <h1 align="center"> GameCritic </h1>
 <p align="center">A simple, RESTful API created to learn Express and Postgres</p>
-<p align="center"><a href="https://game-review-forum.herokuapp.com/api/">Explore</a>
+<p align="center"><a href="https://gamecritic.herokuapp.com/api/">Explore</a>
 
 ## Table Of Contents
 
