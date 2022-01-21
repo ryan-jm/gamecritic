@@ -1,0 +1,35 @@
+name: GameCritic - Test & Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Setup PostgreSQL Database
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: 'nc_games_test'
+          postgresql user: 'github_actions'
+          postgresql password: 'githubactions'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Utils Tests
+        run: PGDATABASE=nc_games_test PGUSER=github_actions PGPASSWORD=githubactions npm t utils
+
+      - name: Run API Tests
+        run: PGDATABASE=nc_games_test PGUSER=github_actions PGPASSWORD=githubactions npm t app
