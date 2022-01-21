@@ -1,4 +1,4 @@
-name: GameCritic - Test & Deploy
+name: test-and-deploy
 
 on:
   push:
