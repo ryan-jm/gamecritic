@@ -1,6 +1,6 @@
 <h1 align="center"> GameCritic </h1>
 <p align="center">A simple, RESTful API created to learn Express and Postgres</p>
-<p align="center"><a href="https://gamecritic.herokuapp.com/api/">Explore</a>
+<p align="center"><a href="https://gamecritic.herokuapp.com/api">Explore</a>
 
 ## Table Of Contents
 
@@ -37,7 +37,7 @@ The purpose of this API is to enable me to learn about utilising Express.js and 
 
 ## Getting Started
 
-If you would like to view this API, you can [click here](https://gamecritic.herokuapp.com/api/) to view and interact with it through your browser (Firefox/Chrome recommended for the built-in JSON prettier). Alternatively, you can follow the steps below to have it operating locally on your machine.
+If you would like to view this API, you can [click here](https://gamecritic.herokuapp.com/api) to view and interact with it through your browser (Firefox/Chrome recommended for the built-in JSON prettier). Alternatively, you can follow the steps below to have it operating locally on your machine.
 
 ### Prerequisites:
 
@@ -63,11 +63,11 @@ If you would like to view this API, you can [click here](https://gamecritic.hero
 
 ## Usage
 
-Make a GET request to `/api/` to view all of the available endpoints and their queries/parameters, as well as example responses.
+Make a GET request to `/api` to view all of the available endpoints and their queries/parameters, as well as example responses.
 
 ## Roadmap
 
-- [ ] Integrate JWT authorization to protect endpoints.
+- [x] ~~Integrate JWT authorization to protect endpoints.~~ [Done](https://github.com/sanctumlysis/gamecritic/issues/1).
 
 - [ ] Implement image storage and random generation of images for categories.
 
