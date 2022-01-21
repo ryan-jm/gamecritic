@@ -16,23 +16,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 15
 
       - name: Setup PostgreSQL Database
         uses: harmon758/postgresql-action@v1
         with:
-          postgresql db: 'nc_games_test'
-          postgresql user: 'github_actions'
-          postgresql password: 'githubactions'
+          postgresql db: 'my_db'
+          postgresql user: 'test_user'
+          postgresql password: 'test_password'
 
       - name: Install Dependencies
         run: npm ci
 
-      - name: Seed Test Database
-        run: PGDATABASE=nc_games_test PGUSER=github_actions PGPASSWORD=githubactions npm run setup-dbs && npm run seed
-
-      - name: Run Utils Tests
-        run: PGDATABASE=nc_games_test PGUSER=github_actions PGPASSWORD=githubactions npm t utils
-
       - name: Run API Tests
-        run: PGDATABASE=nc_games_test PGUSER=github_actions PGPASSWORD=githubactions npm t app
+        run: PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password npm t app
