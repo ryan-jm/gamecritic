@@ -44,7 +44,7 @@ If you would like to view this API, you can [click here](https://gamecritic.hero
 
 - Fork and clone the repository on your machine.
 
-- Make sure you have [Node >v14](https://nodejs.org/en/) and the latest LTS version of [PostgreSQL](https://www.postgresql.org/) installed.
+- Make sure you have [Node >v14.x](https://nodejs.org/en/) and the latest version of [PostgreSQL](https://www.postgresql.org/) installed.
 
 ### Installation:
 
