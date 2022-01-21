@@ -51,9 +51,9 @@ If you would like to view this API, you can [click here](https://game-review-for
 
 - Once all dependencies are installed, create a `.env.test` and `.env.development` file within the root directory of the cloned repo.
 
-> **.env.development:** `PGDATABASE=nc_games`
+> **.env.development:** `PGDATABASE=gamecritic`
 
-> **.env.test:** `PGDATABASE=nc_games_test`
+> **.env.test:** `PGDATABASE=gamecritic_test`
 
 - Once the `.env` files have been created, run the `npm run setup-dbs` command followed by `npm run seed` to create and populate the necessary tables.
 
