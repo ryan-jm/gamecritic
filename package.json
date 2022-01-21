@@ -1,5 +1,5 @@
 {
-  "name": "GameCritic",
+  "name": "gamecritic",
   "version": "1.0.0",
   "description": "A simple, RESTful API created to learn Express and Postgres",
   "main": "./app/listen.js",
