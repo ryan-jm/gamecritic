@@ -18,7 +18,6 @@
 
 The purpose of this API is to enable me to learn about utilising Express.js and PostgreSQL and how to utilise them in conjunction to create a stable API with a plethora of endpoints, with versatile queries and parameters on each endpoint. The API is considered a RESTful API with stateless requests and a uniform interface.
 
-
 **Concepts I have learned from this project:**
 
 - How to set up different environments and databases for production, development and testing.
@@ -49,11 +48,7 @@ If you would like to view this API, you can [click here](https://gamecritic.hero
 
 - `cd` into the cloned repo and run `npm install` to install the dependencies.
 
-- Once all dependencies are installed, create a `.env.test` and `.env.development` file within the root directory of the cloned repo.
-
-> **.env.development:** `PGDATABASE=gamecritic`
-
-> **.env.test:** `PGDATABASE=gamecritic_test`
+- Once all dependencies are installed, create a `.env.test` and `.env.development` file within the root directory of the cloned repo Follow the structure set out in [.env-example](/.env-example).
 
 - Once the `.env` files have been created, run the `npm run setup-dbs` command followed by `npm run seed` to create and populate the necessary tables.
 
