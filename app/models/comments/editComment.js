@@ -4,7 +4,7 @@ const format = require('pg-format');
 
 const editComment = async ({ inc_votes }, id) => {
   const commentValid = await commentValidator(id);
-  if (!inc_votes || inc_votes === undefined) inc_votes = 0;
+  if (!inc_votes) inc_votes = 0;
   const votesValid = idValidator(inc_votes);
 
   if (!votesValid && inc_votes !== 0) {
