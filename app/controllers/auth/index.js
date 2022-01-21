@@ -19,7 +19,7 @@ exports.postAuthInfo = async (req, res, next) => {
   const { username, password } = req.body;
   try {
     const token = await verifyCredentials(username, password);
-    return res.status(200).send({ token });
+    return res.status(201).send({ token });
   } catch (err) {
     return next(err);
   }
