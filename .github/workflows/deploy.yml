@@ -46,4 +46,4 @@ jobs:
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
         env:
-          JWTSECRET: ${{secrets.JWT_SECRET}}
+          HD_JWTSECRET: ${{secrets.JWT_SECRET}}
