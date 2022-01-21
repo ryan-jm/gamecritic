@@ -1,22 +1,36 @@
+require('dotenv').config({
+  path: `${__dirname}/../.env.test`,
+});
+
 const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
 const seed = require('../db/seeds/seed.js');
 const app = require('../app');
 const NCGamesAPI = require('../app/endpoints.json');
+const supertest = require('supertest');
+const defaults = require('superagent-defaults');
+const jwt = require('jsonwebtoken');
 
-const request = require('supertest');
+const request = defaults(supertest(app));
+const secret = process.env.JWTSECRET;
+const credentials = process.env.TEST_CREDENTIALS;
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
+beforeAll(() => {
+  /* Generate a test token and set it before all tests. */
+  const testToken = jwt.sign(credentials, secret);
+  request.set('token', testToken);
+});
 
 describe('API Endpoints', () => {
   describe('GET: /api/ - Health Check / Endpoint Info', () => {
     it('should respond with a 200 status code', () => {
-      return request(app).get('/api/').expect(200);
+      return request.get('/api').expect(200);
     });
 
     it('should respond with all the valid endpoints', async () => {
-      const res = await request(app).get('/api/').expect(200);
+      const res = await request.get('/api').expect(200);
       expect(res.body.NCGamesAPI).toEqual(NCGamesAPI);
     });
   });
@@ -24,17 +38,17 @@ describe('API Endpoints', () => {
   describe('Categories routes', () => {
     describe('GET: /api/categories/ - Get all categories', () => {
       it('should respond with a 200 status code', () => {
-        return request(app).get('/api/categories').expect(200);
+        return request.get('/api/categories').expect(200);
       });
 
       it('should return an array of categories with the length of 4', async () => {
-        const res = await request(app).get('/api/categories');
+        const res = await request.get('/api/categories');
         expect(res.body.categories).toBeInstanceOf(Array);
         expect(res.body.categories).toHaveLength(4);
       });
 
       it('the returned array should consist of category entries with a slug and description property', async () => {
-        const res = await request(app).get('/api/categories');
+        const res = await request.get('/api/categories');
         res.body.categories.forEach((category) => {
           expect(category).toEqual(
             expect.objectContaining({
@@ -62,11 +76,11 @@ describe('API Endpoints', () => {
 
     describe('GET: /api/reviews - Get all reviews', () => {
       it('should respond with a 200 status code', () => {
-        return request(app).get('/api/reviews').expect(200);
+        return request.get('/api/reviews').expect(200);
       });
 
       it('should respond with an array of review entries which follow the review schema', async () => {
-        const res = await request(app).get('/api/reviews/');
+        const res = await request.get('/api/reviews/');
         const {
           body: { reviews },
         } = res;
@@ -78,7 +92,7 @@ describe('API Endpoints', () => {
       });
 
       it('without queries, it should respond with the reviews sorted by date and in descending order', async () => {
-        const res = await request(app).get('/api/reviews').expect(200);
+        const res = await request.get('/api/reviews').expect(200);
         const {
           body: { reviews },
         } = res;
@@ -92,7 +106,7 @@ describe('API Endpoints', () => {
       it('pagination: should automatically limit to 10 results and page 1', async () => {
         const {
           body: { reviews, page, limit },
-        } = await request(app).get('/api/reviews');
+        } = await request.get('/api/reviews');
         expect(reviews).toHaveLength(10);
         expect(page).toBe(1);
         expect(limit).toBe(10);
@@ -101,7 +115,7 @@ describe('API Endpoints', () => {
       it('pagination: current page can be changed by using the ?p query', async () => {
         const {
           body: { reviews, page, limit },
-        } = await request(app).get('/api/reviews?p=2');
+        } = await request.get('/api/reviews?p=2');
         expect(reviews).toHaveLength(3);
         expect(page).toBe('2');
         expect(limit).toBe(10);
@@ -110,7 +124,7 @@ describe('API Endpoints', () => {
       it('pagination: limit can be changed by using the ?limit query', async () => {
         const {
           body: { reviews, page, limit },
-        } = await request(app).get('/api/reviews?limit=13');
+        } = await request.get('/api/reviews?limit=13');
         expect(reviews).toHaveLength(13);
         expect(page).toBe(1);
         expect(limit).toBe('13');
@@ -119,17 +133,15 @@ describe('API Endpoints', () => {
       it('queries: works with "sort_by" queries', async () => {
         const {
           body: { reviews: byReviewId },
-        } = await request(app)
-          .get('/api/reviews?sort_by=review_id')
-          .expect(200);
+        } = await request.get('/api/reviews?sort_by=review_id').expect(200);
 
         const {
           body: { reviews: byVotes },
-        } = await request(app).get('/api/reviews?sort_by=votes').expect(200);
+        } = await request.get('/api/reviews?sort_by=votes').expect(200);
 
         const {
           body: { reviews: byTitle },
-        } = await request(app).get('/api/reviews?sort_by=title').expect(200);
+        } = await request.get('/api/reviews?sort_by=title').expect(200);
 
         expect(byReviewId).toBeSortedBy('review_id', {
           descending: true,
@@ -152,12 +164,12 @@ describe('API Endpoints', () => {
       it('queries: works with "order" queries (asc or desc)', async () => {
         const {
           body: { reviews: reviewsAscending },
-        } = await request(app)
+        } = await request
           .get('/api/reviews?sort_by=votes&order=asc')
           .expect(200);
         const {
           body: { reviews: reviewsDescending },
-        } = await request(app)
+        } = await request
           .get('/api/reviews?sort_by=votes&order=desc')
           .expect(200);
         expect(reviewsAscending).toBeSortedBy('votes', {
@@ -174,12 +186,10 @@ describe('API Endpoints', () => {
       it('queries: works with "category" queries to filter by category', async () => {
         const {
           body: { reviews: dexterityOnly },
-        } = await request(app)
-          .get('/api/reviews?category=dexterity')
-          .expect(200);
+        } = await request.get('/api/reviews?category=dexterity').expect(200);
         const {
           body: { reviews: socialDeductionOnly },
-        } = await request(app)
+        } = await request
           .get('/api/reviews?category=social deduction')
           .expect(200);
 
@@ -197,7 +207,7 @@ describe('API Endpoints', () => {
       it('queries: category query is valid but has no reviews, respond with a 200 status code and empty array', async () => {
         const {
           body: { reviews },
-        } = await request(app)
+        } = await request
           .get("/api/reviews?category=children's games")
           .expect(200);
 
@@ -209,28 +219,28 @@ describe('API Endpoints', () => {
       it('error: if the category query exists but the category is invalid in the db, respond with 404', async () => {
         const {
           body: { message },
-        } = await request(app).get('/api/reviews?category=test').expect(404);
+        } = await request.get('/api/reviews?category=test').expect(404);
         expect(message).toBe('Category non-existent');
       });
 
       it('error: if the order query exists but is invalid, respond with a 400 bad request', async () => {
         const {
           body: { message },
-        } = await request(app).get('/api/reviews?order=test').expect(400);
+        } = await request.get('/api/reviews?order=test').expect(400);
         expect(message).toBe('Invalid order query');
       });
 
       it('error: responds with a 400 bad request if sort_by category does not exist', async () => {
         const {
           body: { message },
-        } = await request(app).get('/api/reviews?sort_by=cheese').expect(400);
+        } = await request.get('/api/reviews?sort_by=cheese').expect(400);
         expect(message).toBe('Bad Request');
       });
     });
 
     describe('GET: /api/reviews/:id - Get review by ID', () => {
       it('should respond with a 200 status code', () => {
-        return request(app).get('/api/reviews/3').expect(200);
+        return request.get('/api/reviews/3').expect(200);
       });
 
       it('should respond with a "review" object containing the values of the requested review', async () => {
@@ -244,7 +254,7 @@ describe('API Endpoints', () => {
           votes: 5,
         };
 
-        const res = await request(app).get('/api/reviews/3');
+        const res = await request.get('/api/reviews/3');
         const {
           body: { review },
         } = res;
@@ -259,12 +269,12 @@ describe('API Endpoints', () => {
       });
 
       it('error: should respond with a 404 not found if no review entry can be found', async () => {
-        const res = await request(app).get('/api/reviews/100').expect(404);
+        const res = await request.get('/api/reviews/100').expect(404);
         expect(res.body.message).toBe('No review found');
       });
 
       it('error: should respond with a 400 invalid request response if id given is not a number', async () => {
-        const res = await request(app).get('/api/reviews/test').expect(400);
+        const res = await request.get('/api/reviews/test').expect(400);
         expect(res.body.message).toBe('Invalid ID provided');
       });
     });
@@ -282,7 +292,7 @@ describe('API Endpoints', () => {
       };
 
       it('should respond with a 200 status code if successful', () => {
-        return request(app)
+        return request
           .patch('/api/reviews/3')
           .send({ inc_votes: 10 })
           .expect(200);
@@ -301,7 +311,7 @@ describe('API Endpoints', () => {
 
         const {
           body: { review },
-        } = await request(app)
+        } = await request
           .patch('/api/reviews/3')
           .send({ inc_votes: 10 })
           .expect(200);
@@ -317,7 +327,7 @@ describe('API Endpoints', () => {
       it('negative integers: should respond with the updated review entry', async () => {
         const {
           body: { review },
-        } = await request(app)
+        } = await request
           .patch('/api/reviews/3')
           .send({ inc_votes: -4 })
           .expect(200);
@@ -339,7 +349,7 @@ describe('API Endpoints', () => {
 
         const {
           body: { review },
-        } = await request(app).patch('/api/reviews/4').send({}).expect(200);
+        } = await request.patch('/api/reviews/4').send({}).expect(200);
 
         expect(review).toEqual(expect.objectContaining(patchSchema));
         expect(review.title).toBe(reviewFour.title);
@@ -351,7 +361,7 @@ describe('API Endpoints', () => {
       });
 
       it('error: should respond with a 404 not found response if no review entry can be found', async () => {
-        const res = await request(app)
+        const res = await request
           .patch('/api/reviews/555')
           .send({ inc_votes: 1 })
           .expect(404);
@@ -359,11 +369,11 @@ describe('API Endpoints', () => {
       });
 
       it('error: should respond with a 400 bad request if the id or the inc_votes value is not an integer', async () => {
-        const invalidID = await request(app)
+        const invalidID = await request
           .patch('/api/reviews/test')
           .send({ inc_votes: 1 })
           .expect(400);
-        const invalidIncVotes = await request(app)
+        const invalidIncVotes = await request
           .patch('/api/reviews/3')
           .send({ inc_votes: 'Test' })
           .expect(400);
@@ -385,13 +395,13 @@ describe('API Endpoints', () => {
       };
 
       it('should respond with a 200 status code if successful', () => {
-        return request(app).get('/api/reviews/3/comments').expect(200);
+        return request.get('/api/reviews/3/comments').expect(200);
       });
 
       it('should respond with an array of comments following the comment schema', async () => {
         const {
           body: { comments },
-        } = await request(app).get('/api/reviews/3/comments');
+        } = await request.get('/api/reviews/3/comments');
 
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(3);
@@ -403,7 +413,7 @@ describe('API Endpoints', () => {
       it('responds with an empty array if the review exists but no comments are present', async () => {
         const {
           body: { comments },
-        } = await request(app).get('/api/reviews/12/comments');
+        } = await request.get('/api/reviews/12/comments');
 
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(0);
@@ -413,14 +423,14 @@ describe('API Endpoints', () => {
       it('error: should return a 400 bad request error if the review id is invalid / not integer', async () => {
         const {
           body: { message },
-        } = await request(app).get('/api/reviews/test/comments').expect(400);
+        } = await request.get('/api/reviews/test/comments').expect(400);
         expect(message).toBe('Invalid review id');
       });
 
       it('error: review id is valid but does not exist in the db, respond with a 404', async () => {
         const {
           body: { message },
-        } = await request(app).get('/api/reviews/20/comments').expect(404);
+        } = await request.get('/api/reviews/20/comments').expect(404);
         expect(message).toBe('Review cannot be found');
       });
     });
@@ -435,7 +445,7 @@ describe('API Endpoints', () => {
       };
 
       it('should respond with a 201 status code if successful', () => {
-        return request(app)
+        return request
           .post('/api/reviews/3/comments')
           .send({
             username: 'bainesface',
@@ -447,14 +457,12 @@ describe('API Endpoints', () => {
       it('ignores unncessary properties in request body', async () => {
         const {
           body: { comment },
-        } = await request(app)
-          .post('/api/reviews/3/comments')
-          .send({
-            username: 'bainesface',
-            body: 'Ignoring other props',
-            anotherProp: 'should be ignored',
-            likes: ['cheese', 'wine', 'work parties'],
-          });
+        } = await request.post('/api/reviews/3/comments').send({
+          username: 'bainesface',
+          body: 'Ignoring other props',
+          anotherProp: 'should be ignored',
+          likes: ['cheese', 'wine', 'work parties'],
+        });
 
         expect(comment.hasOwnProperty('anotherProp')).toBe(false);
         expect(comment.hasOwnProperty('likes')).toBe(false);
@@ -468,7 +476,7 @@ describe('API Endpoints', () => {
       it('should respond with the newly posted comment entry following the comment schema', async () => {
         const {
           body: { comment },
-        } = await request(app).post('/api/reviews/3/comments').send({
+        } = await request.post('/api/reviews/3/comments').send({
           username: 'bainesface',
           body: 'Look! Another test comment!',
         });
@@ -483,7 +491,7 @@ describe('API Endpoints', () => {
       it('error: should return a 400 bad request if the username or body of the request is missing', async () => {
         const {
           body: { message: noUsername },
-        } = await request(app)
+        } = await request
           .post('/api/reviews/3/comments')
           .send({
             body: 'Uh oh! This wont work!',
@@ -491,7 +499,7 @@ describe('API Endpoints', () => {
           .expect(400);
         const {
           body: { message: noRequestBody },
-        } = await request(app)
+        } = await request
           .post('/api/reviews/3/comments')
           .send({
             username: 'bainesface',
@@ -505,7 +513,7 @@ describe('API Endpoints', () => {
       it('error: should return a 400 bad request if the review id is invalid', async () => {
         const {
           body: { message },
-        } = await request(app)
+        } = await request
           .post('/api/reviews/test/comments')
           .send({
             username: 'bainesface',
@@ -519,7 +527,7 @@ describe('API Endpoints', () => {
       it('error: should return a 404 if the review id is valid but does not exist in the db', async () => {
         const {
           body: { message },
-        } = await request(app)
+        } = await request
           .post('/api/reviews/999/comments')
           .send({
             username: 'bainesface',
@@ -533,7 +541,7 @@ describe('API Endpoints', () => {
       it('error: should return a 404 if the user cannot be found in the db', async () => {
         const {
           body: { message },
-        } = await request(app)
+        } = await request
           .post('/api/reviews/3/comments')
           .send({
             username: 'TestUser3000',
@@ -557,7 +565,7 @@ describe('API Endpoints', () => {
 
     describe('PATCH: /api/comments/:id - update the vote count for a comment', () => {
       it('should return a 200 response on a successful update', () => {
-        return request(app)
+        return request
           .patch('/api/comments/2')
           .send({ inc_votes: 1 })
           .expect(200);
@@ -566,7 +574,7 @@ describe('API Endpoints', () => {
       it('should return the updated comment entry, following the commentSchema', async () => {
         const {
           body: { comment },
-        } = await request(app).patch('/api/comments/2').send({ inc_votes: 1 });
+        } = await request.patch('/api/comments/2').send({ inc_votes: 1 });
 
         expect(comment).toEqual(expect.objectContaining(commentSchema));
       });
@@ -581,7 +589,7 @@ describe('API Endpoints', () => {
 
         const {
           body: { comment },
-        } = await request(app).patch('/api/comments/3').send({ inc_votes: 1 });
+        } = await request.patch('/api/comments/3').send({ inc_votes: 1 });
 
         expect(comment.body).toBe(oldComment.body);
         expect(comment.author).toBe(oldComment.author);
@@ -599,7 +607,7 @@ describe('API Endpoints', () => {
 
         const {
           body: { comment },
-        } = await request(app).patch('/api/comments/3').send({}).expect(200);
+        } = await request.patch('/api/comments/3').send({}).expect(200);
         expect(comment.body).toBe(oldComment.body);
         expect(comment.votes).toBe(oldComment.votes);
         expect(comment.author).toBe(oldComment.author);
@@ -609,7 +617,7 @@ describe('API Endpoints', () => {
       it('error: should return a 400 bad request if the inc_votes value is invalid (not a number or coercable)', async () => {
         const {
           body: { message },
-        } = await request(app)
+        } = await request
           .patch('/api/comments/3')
           .send({ inc_votes: 'not-valid' })
           .expect(400);
@@ -619,7 +627,7 @@ describe('API Endpoints', () => {
       it('error: should return a 400 bad request if the comment id is invalid (not a number or coercable)', async () => {
         const {
           body: { message },
-        } = await request(app)
+        } = await request
           .patch('/api/comments/not-a-valid-comment')
           .send({ inc_votes: 1 })
           .expect(400);
@@ -629,7 +637,7 @@ describe('API Endpoints', () => {
       it('error: should return a 404 not found if the comment id is valid but does not exist in the db', async () => {
         const {
           body: { message },
-        } = await request(app)
+        } = await request
           .patch('/api/comments/999')
           .send({ inc_votes: 1 })
           .expect(404);
@@ -639,20 +647,20 @@ describe('API Endpoints', () => {
 
     describe('DELETE: /api/comments/:id - delete the corresponding comment', () => {
       it('should return a 204 status code with no content if successful', () => {
-        return request(app).delete('/api/comments/2').expect(204);
+        return request.delete('/api/comments/2').expect(204);
       });
 
       it('error: should return a 400 bad request if the comment id is invalid', async () => {
         const {
           body: { message },
-        } = await request(app).delete('/api/comments/test').expect(400);
+        } = await request.delete('/api/comments/test').expect(400);
         expect(message).toBe('Invalid comment id');
       });
 
       it('error: should return a 404 if the comment id is valid but does not exist in the db', async () => {
         const {
           body: { message },
-        } = await request(app).delete('/api/comments/999').expect(404);
+        } = await request.delete('/api/comments/999').expect(404);
         expect(message).toBe('Comment does not exist');
       });
     });
@@ -661,13 +669,13 @@ describe('API Endpoints', () => {
   describe('Users routes', () => {
     describe('GET: /api/users - get an array of all users', () => {
       it('should return a 200 status code when request is successful', () => {
-        return request(app).get('/api/users').expect(200);
+        return request.get('/api/users').expect(200);
       });
 
       it('should return an array of user entries', async () => {
         const {
           body: { users },
-        } = await request(app).get('/api/users');
+        } = await request.get('/api/users');
         expect(users).toBeInstanceOf(Array);
         expect(users).toHaveLength(4);
       });
@@ -681,20 +689,20 @@ describe('API Endpoints', () => {
       };
 
       it('should respond with a 200 status code when request is successful', () => {
-        return request(app).get('/api/users/bainesface').expect(200);
+        return request.get('/api/users/bainesface').expect(200);
       });
 
       it('should respond with a user entry following the userSchema', async () => {
         const {
           body: { user },
-        } = await request(app).get('/api/users/bainesface');
+        } = await request.get('/api/users/bainesface');
         expect(user).toEqual(expect.objectContaining(userSchema));
       });
 
       it('should respond with the correct user entry', async () => {
         const {
           body: { user },
-        } = await request(app).get('/api/users/bainesface');
+        } = await request.get('/api/users/bainesface');
 
         expect(user.username).toBe('bainesface');
         expect(user.name).toBe('sarah');
@@ -706,15 +714,106 @@ describe('API Endpoints', () => {
       it('error: should respond with a 400 bad request if the username parameter is invalid', async () => {
         const {
           body: { message },
-        } = await request(app).get('/api/users/1234').expect(400);
+        } = await request.get('/api/users/1234').expect(400);
         expect(message).toBe('Invalid username provided');
       });
 
       it('error: should respond with a 404 if the username is valid but cannot be found in db', async () => {
         const {
           body: { message },
-        } = await request(app).get('/api/users/fakeuser44129').expect(404);
+        } = await request.get('/api/users/fakeuser44129').expect(404);
         expect(message).toBe('User does not exist');
+      });
+    });
+  });
+
+  describe('\nJWT Authorization', () => {
+    it('should check for a token value in the headers, if one is not present, return 401 not authorised', async () => {
+      /* Remove the authorization token for testing */
+      request.set('token', '');
+
+      const {
+        body: { message },
+      } = await request.get('/api/reviews').expect(401);
+      expect(message).toBe(
+        'Unauthorized. Make a GET request to /api/auth to get an access token.'
+      );
+    });
+
+    it('GET: /api/ is not protected - allows user to visit without an authorization token', () => {
+      return request.get('/api').expect(200);
+    });
+
+    describe('AUTH > GET: /api/auth', () => {
+      const authInstructions = {
+        1: 'Send a POST request to this endpoint with the body containing your username and password credentials',
+        '1 - Example POST Body': {
+          username: 'test-user',
+          password: 'password123',
+        },
+        2: 'If your credentials are valid, you will receive a response containing your JWT Auth Token.',
+        3: "Set this token in your headers as the following key-value pair: 'token': 'example-jwt-token'",
+        4: 'Now you can access all of the endpoints displayed on /api',
+        Note: 'Want to test this out? Send a POST request to this endpoint with the example body above!',
+      };
+
+      it('should allow user to access the endpoint without an authorization token, returns a 200 status code', () => {
+        /* Remove the authorization token for testing */
+        request.set('token', '');
+        return request.get('/api/auth').expect(200);
+      });
+
+      it('should respond with instructions detailing how the user can get an auth token via POST', async () => {
+        const {
+          body: { instructions },
+        } = await request.get('/api/auth');
+
+        expect(instructions).toEqual(authInstructions);
+      });
+    });
+
+    describe('AUTH > POST: /api/auth', () => {
+      it('returns a 201 status code upon successful authentication', () => {
+        return request
+          .post('/api/auth')
+          .send({ username: 'test-user', password: 'password123' })
+          .expect(201);
+      });
+
+      it('error: returns a 400 response when credentials are invalid or missing', async () => {
+        const {
+          body: { message },
+        } = await request
+          .post('/api/auth')
+          .send({ username: 'test' })
+          .expect(400);
+        expect(message).toBe('Missing credentials');
+      });
+
+      it('returns a signed JWT token when passed valid credentials', async () => {
+        const username = 'test-user';
+        const password = 'password123';
+        const expectedToken = jwt.sign(username + password, secret);
+
+        const {
+          body: { token },
+        } = await request.post('/api/auth').send({ username, password });
+
+        expect(token).toBe(expectedToken);
+
+        /* Use this generated token to test access to other endpoints */
+        request.set('token', token);
+      });
+
+      it('once the token has been received and set in the headers, access to endpoints is granted', async () => {
+        await request.get('/api/reviews').expect(200);
+        await request.get('/api/categories').expect(200);
+        await request.get('/api/reviews/5').expect(200);
+        await request.get('/api/users').expect(200);
+        await request
+          .patch('/api/reviews/3')
+          .send({ inc_votes: 1 })
+          .expect(200);
       });
     });
   });

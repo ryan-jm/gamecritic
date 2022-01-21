@@ -9,3 +9,5 @@ exports.errorHandler = (err, req, res, next) => {
   else if (err.code) throwCodeError(err, res);
   else throwInternalError(err, res);
 };
+
+exports.auth = require('./auth');

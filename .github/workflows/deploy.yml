@@ -29,7 +29,7 @@ jobs:
         run: npm ci
 
       - name: Run Test-suites
-        run: PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password npm t
+        run: PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password JWTSECRET=${{secrets.JWT_SECRET}} TEST_CREDENTIALS=${{secrets.JWT_TEST_CREDENTIALS}} npm t
 
   deploy:
     name: Deployment
@@ -45,3 +45,5 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
+        env:
+          HD_JWTSECRET: ${{secrets.JWT_SECRET}}
