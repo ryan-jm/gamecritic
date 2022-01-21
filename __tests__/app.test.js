@@ -21,6 +21,7 @@ beforeAll(() => {
   /* Generate a test token and set it before all tests. */
   const testToken = jwt.sign(credentials, secret);
   request.set('token', testToken);
+  return;
 });
 
 describe('API Endpoints', () => {
