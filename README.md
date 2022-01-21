@@ -29,6 +29,8 @@ The purpose of this API is to enable me to learn about utilising Express.js and 
 - Testing asynchronous code with [Jest](https://jestjs.io/).
 
 - Hosting with [Heroku](https://heroku.com).
+  
+- How to utilise JWTs for authentication.
 
 ## Built With
 
