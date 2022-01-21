@@ -13,12 +13,13 @@ const jwt = require('jsonwebtoken');
 
 const request = defaults(supertest(app));
 const secret = process.env.JWTSECRET;
+const credentials = process.env.TEST_CREDENTIALS;
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 beforeAll(() => {
   /* Generate a test token and set it before all tests. */
-  const testToken = jwt.sign('testing', secret);
+  const testToken = jwt.sign(credentials, secret);
   request.set('token', testToken);
 });
 
