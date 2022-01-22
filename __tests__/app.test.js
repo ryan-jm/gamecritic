@@ -60,7 +60,7 @@ describe('API Endpoints', () => {
       });
     });
 
-    describe.only('POST: /api/categories - Post a new category', () => {
+    describe('POST: /api/categories - Post a new category', () => {
       it('should respond with a 201 status code when post is successful', () => {
         const postBody = {
           slug: 'Test Category',
