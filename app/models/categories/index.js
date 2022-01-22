@@ -30,13 +30,16 @@ exports.insertCategory = async (body) => {
   }
 
   try {
-    const { rows } = await db.query(`
+    const { rows } = await db.query(
+      `
     INSERT INTO categories
     (slug, description)
     VALUES
     ($1, $2)
     RETURNING *;
-    `);
+    `,
+      [slug, description]
+    );
     if (rows) return rows[0];
   } catch (err) {
     return Promise.reject(err);
