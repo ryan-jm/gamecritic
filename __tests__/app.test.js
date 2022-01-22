@@ -37,6 +37,10 @@ describe('API Endpoints', () => {
   });
 
   describe('Categories routes', () => {
+    const categorySchema = {
+      slug: expect.any(String),
+      description: expect.any(String),
+    };
     describe('GET: /api/categories/ - Get all categories', () => {
       it('should respond with a 200 status code', () => {
         return request.get('/api/categories').expect(200);
@@ -48,16 +52,90 @@ describe('API Endpoints', () => {
         expect(res.body.categories).toHaveLength(4);
       });
 
-      it('the returned array should consist of category entries with a slug and description property', async () => {
+      it('each category returned should follow the categorySchema', async () => {
         const res = await request.get('/api/categories');
         res.body.categories.forEach((category) => {
-          expect(category).toEqual(
-            expect.objectContaining({
-              slug: expect.any(String),
-              description: expect.any(String),
-            })
-          );
+          expect(category).toEqual(expect.objectContaining(categorySchema));
         });
+      });
+    });
+
+    describe.only('POST: /api/categories - Post a new category', () => {
+      it('should respond with a 201 status code when post is successful', () => {
+        const postBody = {
+          slug: 'Test Category',
+          description: 'Test Description',
+        };
+
+        return request.post('/api/categories').send(postBody).expect(201);
+      });
+
+      it('should respond with the posted category following the categorySchema', async () => {
+        const postBody = {
+          slug: 'Test Category',
+          description: 'Test Description',
+        };
+
+        const {
+          body: { category },
+        } = await request.post('/api/categories').send(postBody);
+
+        expect(category).toEqual(expect.objectContaining(categorySchema));
+        expect(category.slug).toBe(postBody.slug);
+        expect(category.description).toBe(postBody.description);
+      });
+
+      it('should ignore any unnecessary properties', async () => {
+        const postBody = {
+          slug: 'Test Category',
+          description: 'Test Description',
+          unnecessaryString: 'hello',
+          unintendedInteger: 200,
+        };
+
+        const {
+          body: { category },
+        } = await request.post('/api/categories').send(postBody);
+
+        expect(category.hasOwnProperty('unnecessaryString')).toBe(false);
+        expect(category.hasOwnProperty('unintendedInteger')).toBe(false);
+      });
+
+      it('error: should return a 400 bad request if the description field is invalid or omitted', async () => {
+        const postBody = {
+          slug: 'Test Category',
+        };
+
+        const {
+          body: { message },
+        } = await request.post('/api/categories').send(postBody).expect(400);
+
+        expect(message).toBe('Invalid or missing description');
+      });
+
+      it('error: should return a 400 bad request if the slug field is invalid or omitted', async () => {
+        const postBody = {
+          description: 'Test Description',
+        };
+
+        const {
+          body: { message },
+        } = await request.post('/api/categories').send(postBody).expect(400);
+
+        expect(message).toBe('Invalid or missing slug');
+      });
+
+      it('error: should return a 400 bad request if the category already exists', async () => {
+        const postBody = {
+          slug: 'dexterity',
+          description: 'Test Description',
+        };
+
+        const {
+          body: { message },
+        } = await request.post('/api/categories').send(postBody).expect(400);
+
+        expect(message).toBe('Category already exists');
       });
     });
   });
@@ -554,7 +632,7 @@ describe('API Endpoints', () => {
       });
     });
 
-    describe('POST: /api/reviews - post a new review', () => {
+    describe('POST: /api/reviews - Post a new review', () => {
       const postReviewSchema = {
         category: expect.any(String),
         created_at: expect.any(String),
