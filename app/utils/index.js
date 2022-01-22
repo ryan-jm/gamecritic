@@ -39,7 +39,7 @@ class Validator {
       );
       if (users) {
         for (const user of users) {
-          if (username === user) return 200;
+          if (username === user.username) return 200;
         }
       }
     } catch (err) {
