@@ -138,4 +138,31 @@ describe('Validator Class', () => {
       expect(withNaN).toBe(false);
     });
   });
+
+  describe('#categoryValidator', () => {
+    it('should return a boolean', async () => {
+      const output = await validator.categoryValidator(5);
+      expect(output.constructor).toBe(Boolean);
+    });
+
+    it('pass: if the category exists in the database, return true', async () => {
+      const output = await validator.categoryValidator('dexterity');
+      expect(output).toBe(true);
+    });
+
+    it('fail: returns false if category does not exist in the database', async () => {
+      const output = await validator.categoryValidator('testcategory');
+      expect(output).toBe(false);
+    });
+
+    it('fail: if the input category is not a string, returns false', async () => {
+      const withNum = await validator.categoryValidator(12345);
+      const withArray = await validator.categoryValidator(['test', false, 3]);
+      const withNull = await validator.categoryValidator(null);
+
+      expect(withNum).toBe(false);
+      expect(withArray).toBe(false);
+      expect(withNull).toBe(false);
+    });
+  });
 });
