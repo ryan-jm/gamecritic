@@ -1,8 +1,8 @@
 const db = require('../../../db/connection');
-const { commentValidator } = require('../../utils');
+const validator = require('../../utils');
 
 const removeComment = async (id) => {
-  const isValid = await commentValidator(id);
+  const isValid = await validator.commentValidator(id);
   if (!isValid) {
     return Promise.reject({ status: 400, message: 'Invalid comment id' });
   } else if (isValid === 404) {

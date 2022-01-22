@@ -1,9 +1,9 @@
 const format = require('pg-format');
 const db = require('../../../db/connection');
-const { reviewValidator } = require('../../utils');
+const validator = require('../../utils');
 
 const fetchComments = async (id, { p, limit }) => {
-  const isValid = await reviewValidator(id);
+  const isValid = await validator.reviewValidator(id);
   const limitValid = typeof limit === 'number' || typeof limit === 'string';
   const pageValid = typeof p === 'number' || typeof p === 'string';
 

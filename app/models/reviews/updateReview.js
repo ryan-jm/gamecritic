@@ -1,10 +1,10 @@
 const db = require('../../../db/connection');
 const format = require('pg-format');
-const { reviewValidator, idValidator } = require('../../utils');
+const validator = require('../../utils');
 
 const updateReview = async ({ inc_votes = 0 }, id) => {
-  const voteInputValid = idValidator(inc_votes); // Confirms is a number or can be coerced to a number
-  const reviewIdValid = await reviewValidator(id);
+  const voteInputValid = validator.idValidator(inc_votes); // Confirms is a number or can be coerced to a number
+  const reviewIdValid = await validator.reviewValidator(id);
 
   if (!reviewIdValid || (!voteInputValid && inc_votes !== 0)) {
     let status, message;

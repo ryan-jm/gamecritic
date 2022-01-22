@@ -1,8 +1,8 @@
-const { userValidator } = require('../../utils');
+const validator = require('../../utils');
 const db = require('../../../db/connection');
 
 const fetchSingleUser = async (user) => {
-  const isValid = await userValidator(user);
+  const isValid = await validator.userValidator(user);
 
   if (!isValid) {
     return Promise.reject({

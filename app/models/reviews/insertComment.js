@@ -1,9 +1,9 @@
 const db = require('../../../db/connection');
-const { reviewValidator, userValidator } = require('../../utils/');
+const validator = require('../../utils/');
 
 const insertComment = async ({ username, body }, id) => {
-  const validReview = await reviewValidator(id);
-  const userValid = await userValidator(username);
+  const validReview = await validator.reviewValidator(id);
+  const userValid = await validator.userValidator(username);
 
   if (!username || !body) {
     return Promise.reject({

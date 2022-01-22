@@ -1,8 +1,8 @@
-const { reviewValidator } = require('../../utils');
+const validator = require('../../utils');
 const db = require('../../../db/connection');
 
 const fetchReviewById = async (id) => {
-  const isValid = await reviewValidator(id);
+  const isValid = await validator.reviewValidator(id);
 
   if (!isValid) {
     return Promise.reject({ status: 400, message: 'Invalid ID provided' });

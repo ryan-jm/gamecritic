@@ -1,4 +1,5 @@
 const format = require('pg-format');
+const validator = require('../../utils');
 const db = require('../../../db/connection');
 
 const fetchAllReviews = async ({
@@ -9,7 +10,6 @@ const fetchAllReviews = async ({
   p = 1,
 }) => {
   let whereClause = '';
-
   const limitValid = typeof limit === 'number' || typeof limit === 'string';
   const pageValid = typeof p === 'number' || typeof p === 'string';
 
@@ -20,7 +20,7 @@ const fetchAllReviews = async ({
   const pagination = `LIMIT ${limit} OFFSET ${offset * limit}`;
 
   if (category) {
-    const categoryValid = await categoryValidator(category);
+    const categoryValid = await validator.categoryValidator(category);
     if (!categoryValid)
       return Promise.reject({ status: 404, message: 'Category non-existent' });
     else whereClause = format(`WHERE reviews.category = %L`, category);
@@ -53,19 +53,6 @@ const fetchAllReviews = async ({
   } catch (err) {
     return Promise.reject(err);
   }
-};
-
-const categoryValidator = async (input) => {
-  if (typeof input !== 'string') return false;
-  try {
-    const { rows: categories } = await db.query('SELECT * FROM categories;');
-    for await (const category of categories) {
-      if (input === category.slug) return true;
-    }
-  } catch (err) {
-    return false;
-  }
-  return false;
 };
 
 module.exports = fetchAllReviews;
