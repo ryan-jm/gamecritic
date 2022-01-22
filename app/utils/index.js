@@ -67,7 +67,7 @@ class Validator {
   }
 
   async categoryValidator(input) {
-    if (typeof input !== 'string') return false;
+    if (typeof input !== 'string' || !input) return false;
     try {
       const { rows: categories } = await db.query('SELECT * FROM categories;');
       for await (const category of categories) {
