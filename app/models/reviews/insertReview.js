@@ -11,8 +11,8 @@ const insertReview = async (body) => {
   const userValid = await validator.userValidator(owner);
   const categoryValid = await validator.categoryValidator(category);
 
-  if (userValid === 404) {
-    return Promise.reject({ status: 400, message: 'User not found' });
+  if (userValid === 404 || !userValid) {
+    return Promise.reject({ status: 400, message: 'User invalid' });
   }
 
   if (!categoryValid) {
