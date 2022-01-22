@@ -4,6 +4,7 @@ const {
   fetchReviewById,
   updateReview,
   insertComment,
+  insertReview,
 } = require('../../models/reviews');
 
 exports.getReviewById = async (req, res, next) => {
@@ -62,6 +63,17 @@ exports.postComment = async (req, res, next) => {
   try {
     const comment = await insertComment(body, id);
     if (comment) return res.status(201).send({ comment });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.postReview = async (req, res, next) => {
+  const { body } = req;
+
+  try {
+    const review = await insertReview(body);
+    if (review) return res.status(201).send({ review });
   } catch (err) {
     return next(err);
   }
