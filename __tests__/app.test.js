@@ -553,6 +553,115 @@ describe('API Endpoints', () => {
         expect(message).toBe('User does not exist');
       });
     });
+
+    describe('POST: /api/reviews - post a new review', () => {
+      const postReviewSchema = {
+        category: expect.any(String),
+        created_at: expect.any(String),
+        designer: expect.any(String),
+        owner: expect.any(String),
+        review_id: expect.any(Number),
+        review_img_url: expect.any(String),
+        title: expect.any(String),
+        votes: expect.any(Number),
+      };
+
+      it('should respond with a 201 status code if successful', () => {
+        const postBody = {
+          owner: 'bainesface',
+          title: 'Test Review #1!',
+          review_body: 'This is the first POST test review',
+          designer: 'sanctumlysis',
+          category: 'dexterity',
+        };
+
+        return request.post('/api/reviews').send(postBody).expect(201);
+      });
+
+      it('should respond with the posted review, following the review schema', async () => {
+        const postBody = {
+          owner: 'bainesface',
+          title: 'Test Review #1!',
+          review_body: 'This is the first POST test review',
+          designer: 'sanctumlysis',
+          category: 'dexterity',
+        };
+
+        const {
+          body: { review },
+        } = await request.post('/api/reviews').send(postBody);
+
+        expect(review).toEqual(expect.objectContaining(postReviewSchema));
+      });
+
+      it('should ignore any unneccessary properties', async () => {
+        const postBody = {
+          owner: 'bainesface',
+          title: 'Test Review #1!',
+          review_body: 'This is the first POST test review',
+          designer: 'sanctumlysis',
+          category: 'dexterity',
+          randomProperty: 'randomValue',
+          unintendedInteger: 200,
+        };
+
+        const {
+          body: { review },
+        } = await request.post('/api/reviews').send(postBody);
+
+        expect(review.hasOwnProperty('randomProperty')).toBe(false);
+        expect(review.hasOwnProperty('unintendedInteger')).toBe(false);
+      });
+
+      it('should be present in the database after the post is successful', async () => {
+        const postBody = {
+          title: 'Test Review #1!',
+          owner: 'bainesface',
+          review_body: 'This is the first POST test review',
+          designer: 'sanctumlysis',
+          category: 'dexterity',
+        };
+
+        await request.post('/api/reviews').send(postBody);
+        const {
+          body: { review },
+        } = await request.get('/api/reviews/14').expect(200);
+
+        expect(review.title).toBe(postBody.title);
+        expect(review.owner).toBe(postBody.owner);
+        expect(review.designer).toBe(postBody.designer);
+      });
+
+      it('error: should return a 400 bad request if the owner field is invalid or omitted', async () => {
+        const postBody = {
+          title: 'Test Review #1!',
+          review_body: 'This is the first POST test review',
+          designer: 'sanctumlysis',
+          category: 'dexterity',
+        };
+
+        const {
+          body: { message },
+        } = await request.post('/api/reviews').send(postBody).expect(400);
+
+        expect(message).toBe('User invalid');
+      });
+
+      it('error: should return a 400 bad request if the category field is invalid or omitted', async () => {
+        const postBody = {
+          owner: 'bainesface',
+          title: 'Test Review #1!',
+          review_body: 'This is the first POST test review',
+          designer: 'sanctumlysis',
+        };
+
+        const {
+          body: { message },
+        } = await request.post('/api/reviews').send(postBody).expect(400);
+
+        expect(message).toBe('Category invalid');
+      });
+    });
   });
 
   describe('Comments routes', () => {
