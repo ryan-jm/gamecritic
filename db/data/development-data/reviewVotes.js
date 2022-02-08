@@ -1,14 +1,14 @@
 module.exports = [
   {
     user: 'test-account',
-    review: 5,
+    review: 2,
   },
   {
     user: 'test-account',
-    review: 12,
+    review: 3,
   },
   {
     user: 'test-account',
-    review: 7,
+    review: 4,
   },
 ];
