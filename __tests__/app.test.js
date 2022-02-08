@@ -913,6 +913,89 @@ describe('API Endpoints', () => {
         expect(message).toBe('User does not exist');
       });
     });
+
+    describe('GET: /api/users/:username/votes - get all votes a user has added', () => {
+      const voteSchema = {
+        vote_id: expect.any(Number),
+        owner: expect.any(String),
+        review: expect.any(Number),
+      };
+
+      it('should respond with a 200 status code when request is successful', () => {
+        return request.get('/api/users/bainesface/votes').expect(200);
+      });
+
+      it('should respond with an array of votes, following the vote schema', async () => {
+        const {
+          body: { votes },
+        } = await request.get('/api/users/bainesface/votes');
+        votes.forEach((vote) =>
+          expect(vote).toEqual(expect.objectContaining(voteSchema))
+        );
+      });
+
+      it('error: should respond with a 400 bad request if the username parameter is invalid', async () => {
+        const {
+          body: { message },
+        } = await request.get('/api/users/1234/votes').expect(400);
+        expect(message).toBe('Invalid username provided');
+      });
+
+      it('error: should respond with a 404 if the username is valid but cannot be found in db', async () => {
+        const {
+          body: { message },
+        } = await request.get('/api/users/fakeuser44129/votes').expect(404);
+        expect(message).toBe('User does not exist');
+      });
+    });
+
+    describe('POST: /api/users/:username/votes - post a vote to a review and patch the review', () => {
+      const voteSchema = {
+        vote_id: expect.any(Number),
+        owner: expect.any(String),
+        review: expect.any(Number),
+      };
+
+      const postBody = {
+        review_id: 10,
+      };
+
+      it('should respond with a 201 status code when request is successful', () => {
+        return request
+          .post('/api/users/bainesface/votes')
+          .send(postBody)
+          .expect(201);
+      });
+
+      it('should respond with the vote object if the post request was successful', async () => {
+        const {
+          body: { vote },
+        } = await request.post('/api/users/bainesface/votes').send(postBody);
+        expect(vote).toEqual(expect.objectContaining(voteSchema));
+        expect(vote.review).toBe(postBody.review_id);
+        expect(vote.owner).toBe('bainesface');
+      });
+
+      it('error: should respond with a 400 bad request if the username parameter is invalid', async () => {
+        const {
+          body: { message },
+        } = await request
+          .post('/api/users/1234/votes')
+          .send(postBody)
+          .expect(400);
+        expect(message).toBe('Invalid username provided');
+      });
+
+      it('error: should respond with a 404 if the username is valid but cannot be found in db', async () => {
+        const {
+          body: { message },
+        } = await request
+          .post('/api/users/fakeuser44129/votes')
+          .send(postBody)
+          .expect(404);
+        expect(message).toBe('User does not exist');
+      });
+    });
   });
 
   describe('\nJWT Authorization', () => {
