@@ -1,4 +1,9 @@
-const { fetchAllUsers, fetchSingleUser } = require('../../models/users');
+const {
+  fetchAllUsers,
+  fetchSingleUser,
+  fetchVotes,
+  insertVote,
+} = require('../../models/users');
 
 exports.getAllUsers = async (req, res, next) => {
   try {
@@ -14,6 +19,30 @@ exports.getSingleUser = async (req, res, next) => {
   try {
     const user = await fetchSingleUser(username);
     return res.status(200).send({ user });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.getUserVotes = async (req, res, next) => {
+  const { username } = req.params;
+  const { type } = req.query;
+
+  try {
+    const votes = await fetchVotes(username, type);
+    return res.status(200).send({ votes });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.postVote = async (req, res, next) => {
+  const { username } = req.params;
+  const { review_id } = req.body;
+
+  try {
+    const vote = await insertVote(username, review_id);
+    return res.status(201).send({ vote });
   } catch (err) {
     return next(err);
   }
