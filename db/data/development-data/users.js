@@ -35,4 +35,10 @@ module.exports = [
     avatar_url:
       'https://vignette.wikia.nocookie.net/mrmen/images/4/4f/MR_JELLY_4A.jpg/revision/latest?cb=20180104121141',
   },
+  {
+    username: 'test-account',
+    name: 'GameCritic Dev',
+    avatar_url:
+      'https://vignette1.wikia.nocookie.net/mrmen/images/7/7f/Mr_Happy.jpg/revision/latest?cb=20140102171729',
+  },
 ];
