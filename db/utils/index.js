@@ -7,6 +7,7 @@ exports.createAllTables = async () => {
     await createUsers();
     await createReviews();
     await createComments();
+    await createReviewVotes();
   } catch (err) {
     return err;
   }
@@ -14,14 +15,17 @@ exports.createAllTables = async () => {
 
 exports.dropAllTables = async () => {
   try {
-    await db.query('DROP TABLE IF EXISTS categories, users, reviews, comments');
+    await db.query(
+      'DROP TABLE IF EXISTS categories, users, reviews, comments, reviewvotes'
+    );
   } catch (err) {
     return err;
   }
 };
 
 exports.seedAllTables = async (data) => {
-  const { categoryData, commentData, reviewData, userData } = data;
+  const { categoryData, commentData, reviewData, userData, reviewVoteData } =
+    data;
   const queries = {
     categories: 'INSERT INTO categories (slug, description) VALUES %L;',
     users: 'INSERT INTO users (username, name, avatar_url) VALUES %L;',
@@ -29,6 +33,7 @@ exports.seedAllTables = async (data) => {
       'INSERT INTO reviews (title, designer, owner, review_img_url, review_body, category, created_at, votes) VALUES %L;',
     comments:
       'INSERT INTO comments (body, votes, author, review_id, created_at) VALUES %L;',
+    reviewVotes: `INSERT INTO reviewvotes (owner, review) VALUES %L;`,
   };
 
   try {
@@ -37,6 +42,7 @@ exports.seedAllTables = async (data) => {
     await seedFunc(queries.users, userData);
     await seedFunc(queries.reviews, reviewData);
     await seedFunc(queries.comments, commentData);
+    await seedFunc(queries.reviewVotes, reviewVoteData);
   } catch (err) {
     return err;
   }
@@ -96,6 +102,21 @@ const createComments = async () => {
         votes INT DEFAULT 0,
         created_at TIMESTAMP DEFAULT NOW(),
         body TEXT NOT NULL
+        );`
+    );
+    return res;
+  } catch (err) {
+    return err;
+  }
+};
+
+const createReviewVotes = async () => {
+  try {
+    const res = await db.query(
+      `CREATE TABLE reviewvotes (
+        vote_id SERIAL PRIMARY KEY,
+        owner TEXT REFERENCES users(username) NOT NULL,
+        review INT REFERENCES reviews(review_id) NOT NULL
         );`
     );
     return res;
