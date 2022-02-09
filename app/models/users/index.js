@@ -88,7 +88,7 @@ exports.insertVote = async (username, review) => {
   }
 };
 
-exports.removeVote = async (username, review) => {
+exports.removeVote = async (username, review_id) => {
   const isValid = await validator.userValidator(username);
 
   if (!isValid) {
@@ -105,7 +105,7 @@ exports.removeVote = async (username, review) => {
     try {
       await db.query(
         `DELETE FROM reviewvotes WHERE owner = $1 AND review = $2;`,
-        [username, review]
+        [username, review_id]
       );
       const res = await updateReview({ inc_votes: -1 }, review);
       return res;

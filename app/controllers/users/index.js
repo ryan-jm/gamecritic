@@ -50,8 +50,7 @@ exports.postVote = async (req, res, next) => {
 };
 
 exports.deleteVote = async (req, res, next) => {
-  const { username } = req.params;
-  const { review_id } = req.body;
+  const { username, review_id } = req.params;
 
   try {
     await removeVote(username, review_id);
