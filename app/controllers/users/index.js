@@ -3,6 +3,7 @@ const {
   fetchSingleUser,
   fetchVotes,
   insertVote,
+  removeVote,
 } = require('../../models/users');
 
 exports.getAllUsers = async (req, res, next) => {
@@ -43,6 +44,18 @@ exports.postVote = async (req, res, next) => {
   try {
     const vote = await insertVote(username, review_id);
     return res.status(201).send({ vote });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.deleteVote = async (req, res, next) => {
+  const { username } = req.params;
+  const { review_id } = req.body;
+
+  try {
+    await removeVote(username, review_id);
+    return res.status(204).send();
   } catch (err) {
     return next(err);
   }

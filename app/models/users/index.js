@@ -88,7 +88,7 @@ exports.insertVote = async (username, review) => {
   }
 };
 
-exports.deleteVote = async (username, review) => {
+exports.removeVote = async (username, review) => {
   const isValid = await validator.userValidator(username);
 
   if (!isValid) {
