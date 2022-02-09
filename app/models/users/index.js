@@ -107,7 +107,7 @@ exports.removeVote = async (username, review_id) => {
         `DELETE FROM reviewvotes WHERE owner = $1 AND review = $2;`,
         [username, review_id]
       );
-      const res = await updateReview({ inc_votes: -1 }, review);
+      const res = await updateReview({ inc_votes: -1 }, review_id);
       return res;
     } catch (err) {
       return Promise.reject(err);

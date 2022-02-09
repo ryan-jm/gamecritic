@@ -15,5 +15,6 @@ exports.throwCodeError = (err, res) => {
 };
 
 exports.throwInternalError = (err, res) => {
+  console.log(err);
   return res.status(500).send({ message: 'Internal Server Error' });
 };
