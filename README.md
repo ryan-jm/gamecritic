@@ -3,7 +3,6 @@
 <p align="center">A simple, RESTful API created to learn Express and Postgres</p>
 <p align="center"><a href="https://gamecritic.herokuapp.com/api">Explore</a>
 
-
 ## Table Of Contents
 
 - [Overview](#overview)
@@ -69,7 +68,7 @@ Make a GET request to `/api` to view all of the available endpoints and their qu
 
 - [ ] Implement image storage and random generation of images for categories.
 
-- [ ] Add more endpoints.
+- [x] Add more endpoints.
 
 ## License
 
