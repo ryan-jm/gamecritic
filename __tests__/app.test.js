@@ -243,14 +243,10 @@ describe('API Endpoints', () => {
       it('queries: works with "order" queries (asc or desc)', async () => {
         const {
           body: { reviews: reviewsAscending },
-        } = await request
-          .get('/api/reviews?sort_by=votes&order=asc')
-          .expect(200);
+        } = await request.get('/api/reviews?sort_by=votes&order=asc').expect(200);
         const {
           body: { reviews: reviewsDescending },
-        } = await request
-          .get('/api/reviews?sort_by=votes&order=desc')
-          .expect(200);
+        } = await request.get('/api/reviews?sort_by=votes&order=desc').expect(200);
         expect(reviewsAscending).toBeSortedBy('votes', {
           coerce: true,
           strict: true,
@@ -268,9 +264,7 @@ describe('API Endpoints', () => {
         } = await request.get('/api/reviews?category=dexterity').expect(200);
         const {
           body: { reviews: socialDeductionOnly },
-        } = await request
-          .get('/api/reviews?category=social deduction')
-          .expect(200);
+        } = await request.get('/api/reviews?category=social deduction').expect(200);
 
         expect(dexterityOnly).toHaveLength(1);
         dexterityOnly.forEach((dexReviews) =>
@@ -286,9 +280,7 @@ describe('API Endpoints', () => {
       it('queries: category query is valid but has no reviews, respond with a 200 status code and empty array', async () => {
         const {
           body: { reviews },
-        } = await request
-          .get("/api/reviews?category=children's games")
-          .expect(200);
+        } = await request.get("/api/reviews?category=children's games").expect(200);
 
         expect(reviews.constructor).toBe(Array);
         expect(reviews).toHaveLength(0);
@@ -371,10 +363,7 @@ describe('API Endpoints', () => {
       };
 
       it('should respond with a 200 status code if successful', () => {
-        return request
-          .patch('/api/reviews/3')
-          .send({ inc_votes: 10 })
-          .expect(200);
+        return request.patch('/api/reviews/3').send({ inc_votes: 10 }).expect(200);
       });
 
       it('positives integers: should respond with the updated review entry', async () => {
@@ -390,10 +379,7 @@ describe('API Endpoints', () => {
 
         const {
           body: { review },
-        } = await request
-          .patch('/api/reviews/3')
-          .send({ inc_votes: 10 })
-          .expect(200);
+        } = await request.patch('/api/reviews/3').send({ inc_votes: 10 }).expect(200);
 
         expect(review.votes).toBe(patchedReview.votes);
         expect(review.title).toBe(patchedReview.title);
@@ -406,10 +392,7 @@ describe('API Endpoints', () => {
       it('negative integers: should respond with the updated review entry', async () => {
         const {
           body: { review },
-        } = await request
-          .patch('/api/reviews/3')
-          .send({ inc_votes: -4 })
-          .expect(200);
+        } = await request.patch('/api/reviews/3').send({ inc_votes: -4 }).expect(200);
 
         expect(review.votes).toBe(1);
         expect(review).toEqual(expect.objectContaining(patchSchema));
@@ -458,9 +441,7 @@ describe('API Endpoints', () => {
           .expect(400);
 
         expect(invalidID.body.message).toBe('Invalid review_id provided');
-        expect(invalidIncVotes.body.message).toBe(
-          'Invalid inc_vote value provided'
-        );
+        expect(invalidIncVotes.body.message).toBe('Invalid inc_vote value provided');
       });
     });
 
@@ -651,6 +632,7 @@ describe('API Endpoints', () => {
           review_body: 'This is the first POST test review',
           designer: 'sanctumlysis',
           category: 'dexterity',
+          review_img_url: 'http://placehold.it/100',
         };
 
         return request.post('/api/reviews').send(postBody).expect(201);
@@ -661,6 +643,7 @@ describe('API Endpoints', () => {
           owner: 'bainesface',
           title: 'Test Review #1!',
           review_body: 'This is the first POST test review',
+          review_img_url: 'http://placehold.it/100',
           designer: 'sanctumlysis',
           category: 'dexterity',
         };
@@ -680,6 +663,7 @@ describe('API Endpoints', () => {
           designer: 'sanctumlysis',
           category: 'dexterity',
           randomProperty: 'randomValue',
+          review_img_url: 'http://placehold.it/100',
           unintendedInteger: 200,
         };
 
@@ -698,6 +682,7 @@ describe('API Endpoints', () => {
           review_body: 'This is the first POST test review',
           designer: 'sanctumlysis',
           category: 'dexterity',
+          review_img_url: 'http://placehold.it/100',
         };
 
         await request.post('/api/reviews').send(postBody);
@@ -753,10 +738,7 @@ describe('API Endpoints', () => {
 
     describe('PATCH: /api/comments/:id - update the vote count for a comment', () => {
       it('should return a 200 response on a successful update', () => {
-        return request
-          .patch('/api/comments/2')
-          .send({ inc_votes: 1 })
-          .expect(200);
+        return request.patch('/api/comments/2').send({ inc_votes: 1 }).expect(200);
       });
 
       it('should return the updated comment entry, following the commentSchema', async () => {
@@ -825,10 +807,7 @@ describe('API Endpoints', () => {
       it('error: should return a 404 not found if the comment id is valid but does not exist in the db', async () => {
         const {
           body: { message },
-        } = await request
-          .patch('/api/comments/999')
-          .send({ inc_votes: 1 })
-          .expect(404);
+        } = await request.patch('/api/comments/999').send({ inc_votes: 1 }).expect(404);
         expect(message).toBe('Comment does not exist');
       });
     });
@@ -961,10 +940,7 @@ describe('API Endpoints', () => {
       };
 
       it('should respond with a 201 status code when request is successful', () => {
-        return request
-          .post('/api/users/bainesface/votes')
-          .send(postBody)
-          .expect(201);
+        return request.post('/api/users/bainesface/votes').send(postBody).expect(201);
       });
 
       it('should respond with the vote object if the post request was successful', async () => {
@@ -979,10 +955,7 @@ describe('API Endpoints', () => {
       it('error: should respond with a 400 bad request if the username parameter is invalid', async () => {
         const {
           body: { message },
-        } = await request
-          .post('/api/users/1234/votes')
-          .send(postBody)
-          .expect(400);
+        } = await request.post('/api/users/1234/votes').send(postBody).expect(400);
         expect(message).toBe('Invalid username provided');
       });
 
@@ -1054,10 +1027,7 @@ describe('API Endpoints', () => {
       it('error: returns a 400 response when credentials are invalid or missing', async () => {
         const {
           body: { message },
-        } = await request
-          .post('/api/auth')
-          .send({ username: 'test' })
-          .expect(400);
+        } = await request.post('/api/auth').send({ username: 'test' }).expect(400);
         expect(message).toBe('Missing credentials');
       });
 
@@ -1081,10 +1051,7 @@ describe('API Endpoints', () => {
         await request.get('/api/categories').expect(200);
         await request.get('/api/reviews/5').expect(200);
         await request.get('/api/users').expect(200);
-        await request
-          .patch('/api/reviews/3')
-          .send({ inc_votes: 1 })
-          .expect(200);
+        await request.patch('/api/reviews/3').send({ inc_votes: 1 }).expect(200);
       });
     });
   });
