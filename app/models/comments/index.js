@@ -23,8 +23,6 @@ exports.removeComment = async (id) => {
 };
 
 exports.editComment = async ({ inc_votes, comment_body }, id) => {
-  console.log(comment_body);
-
   const commentValid = await validator.commentValidator(id);
   if (!inc_votes) inc_votes = 0;
   const votesValid = validator.idValidator(inc_votes);
