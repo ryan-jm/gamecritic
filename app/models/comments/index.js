@@ -22,7 +22,7 @@ exports.removeComment = async (id) => {
   }
 };
 
-exports.editComment = async ({ inc_votes }, id) => {
+exports.editComment = async ({ inc_votes, body = '' }, id) => {
   const commentValid = await validator.commentValidator(id);
   if (!inc_votes) inc_votes = 0;
   const votesValid = validator.idValidator(inc_votes);
@@ -36,7 +36,7 @@ exports.editComment = async ({ inc_votes }, id) => {
   } else if (commentValid === 404) {
     return Promise.reject({ status: 404, message: 'Comment does not exist' });
   } else {
-    const query = format(
+    let query = format(
       `
       UPDATE comments
       SET votes = votes + %L
@@ -45,6 +45,18 @@ exports.editComment = async ({ inc_votes }, id) => {
       inc_votes,
       id
     );
+    if (body) {
+      query = format(
+        `
+        UPDATE comments
+        SET votes = votes + %L, body = %L
+        WHERE comments.comment_id = %L
+        RETURNING *;`,
+        inc_votes,
+        body,
+        id
+      );
+    }
     try {
       const res = await db.query(query);
       return res.rows[0];
