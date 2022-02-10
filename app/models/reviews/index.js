@@ -36,11 +36,9 @@ exports.updateReview = async ({ inc_votes = 0 }, id) => {
   if (!reviewIdValid || (!voteInputValid && inc_votes !== 0)) {
     let status, message;
 
-    if (!reviewIdValid)
-      (status = 400), (message = 'Invalid review_id provided');
+    if (!reviewIdValid) (status = 400), (message = 'Invalid review_id provided');
 
-    if (!voteInputValid)
-      (status = 400), (message = 'Invalid inc_vote value provided');
+    if (!voteInputValid) (status = 400), (message = 'Invalid inc_vote value provided');
 
     return Promise.reject({
       status,
@@ -190,7 +188,7 @@ exports.insertReview = async (body) => {
     return Promise.reject({ status: 400, message: 'No valid body provided' });
   }
 
-  const { owner, title, review_body, designer, category } = body;
+  const { owner, title, review_body, designer, category, review_img_url } = body;
 
   const userValid = await validator.userValidator(owner);
   const categoryValid = await validator.categoryValidator(category);
@@ -207,12 +205,12 @@ exports.insertReview = async (body) => {
     const { rows } = await db.query(
       `
       INSERT INTO reviews
-      (title, review_body, designer, category, owner)
+      (title, review_body, designer, category, owner, review_img_url)
       VALUES
-      ($1, $2, $3, $4, $5)
+      ($1, $2, $3, $4, $5, $6)
       RETURNING *;
       `,
-      [title, review_body, designer, category, owner]
+      [title, review_body, designer, category, owner, review_img_url]
     );
     if (rows.length !== 0) return rows[0];
     else return Promise.reject({ status: 408, message: 'POST failed.' });
