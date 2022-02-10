@@ -22,7 +22,7 @@ exports.removeComment = async (id) => {
   }
 };
 
-exports.editComment = async ({ inc_votes, body = '' }, id) => {
+exports.editComment = async ({ inc_votes, comment_body }, id) => {
   const commentValid = await validator.commentValidator(id);
   if (!inc_votes) inc_votes = 0;
   const votesValid = validator.idValidator(inc_votes);
@@ -45,7 +45,7 @@ exports.editComment = async ({ inc_votes, body = '' }, id) => {
       inc_votes,
       id
     );
-    if (body) {
+    if (comment_body) {
       query = format(
         `
         UPDATE comments
@@ -53,7 +53,7 @@ exports.editComment = async ({ inc_votes, body = '' }, id) => {
         WHERE comments.comment_id = %L
         RETURNING *;`,
         inc_votes,
-        body,
+        comment_body,
         id
       );
     }
