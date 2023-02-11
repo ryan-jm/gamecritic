@@ -33,7 +33,7 @@
   "devDependencies": {
     "jest": "^27.4.7",
     "jest-sorted": "^1.0.14",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.20",
     "superagent-defaults": "^0.1.14",
     "supertest": "^6.2.1"
   },
